@@ -1,0 +1,95 @@
+-- Initial schema migration
+-- Tables are created in dependency order to avoid foreign key errors
+
+CREATE TABLE ModelProviders (
+  id TEXT PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  is_active INTEGER NOT NULL DEFAULT 0 CHECK (is_active IN (0,1))
+);
+CREATE TABLE ModelProviderConfigs (
+  provider_id TEXT PRIMARY KEY NOT NULL,
+  type TEXT NOT NULL,
+  api_key TEXT,
+  api_url TEXT,
+  FOREIGN KEY (provider_id) REFERENCES ModelProviders(id) ON DELETE CASCADE
+);
+CREATE TABLE Models (
+  id TEXT PRIMARY KEY NOT NULL,
+  provider_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  capabilities TEXT,
+  context_length INTEGER,
+  max_output_tokens INTEGER,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  is_active INTEGER NOT NULL DEFAULT 0 CHECK (is_active IN (0,1)),
+  FOREIGN KEY (provider_id) REFERENCES ModelProviders(id) ON DELETE CASCADE
+);
+CREATE TABLE ChatRooms (
+  id TEXT PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  provider_id TEXT NOT NULL,
+  model_id TEXT,
+  system_prompt TEXT,
+  temperature REAL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (provider_id) REFERENCES ModelProviders(id),
+  FOREIGN KEY (model_id) REFERENCES Models(id) ON DELETE SET NULL
+);
+CREATE TABLE Messages (
+  id TEXT PRIMARY KEY NOT NULL,
+  chat_room_id TEXT NOT NULL,
+  role TEXT NOT NULL,
+  content_text TEXT,
+  content_audio TEXT,
+  content_type TEXT,
+  finish_reason_type TEXT,
+  finish_reason_message TEXT,
+  error_type TEXT,
+  error_message TEXT,
+  token_count INTEGER,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (chat_room_id) REFERENCES ChatRooms(id) ON DELETE CASCADE
+);
+CREATE TABLE MessageAttachments (
+  id TEXT PRIMARY KEY NOT NULL,
+  message_id TEXT NOT NULL,
+  file_path TEXT NOT NULL,
+  file_name TEXT NOT NULL,
+  file_type TEXT,
+  file_size INTEGER,
+  mime_type TEXT,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (message_id) REFERENCES Messages(id) ON DELETE CASCADE
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_models_provider_id ON Models(provider_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_models_id_provider_id ON Models(id, provider_id);
+CREATE INDEX IF NOT EXISTS idx_chatrooms_provider_id ON ChatRooms(provider_id);
+CREATE INDEX IF NOT EXISTS idx_chatrooms_model_id ON ChatRooms(model_id);
+CREATE INDEX IF NOT EXISTS idx_messages_chat_room_id ON Messages(chat_room_id);
+CREATE INDEX IF NOT EXISTS idx_messageattachments_message_id ON MessageAttachments(message_id);
+
+-- Insert default providers
+INSERT INTO ModelProviders (id, name, is_active) VALUES
+('google', 'Google AI Studio', 0),
+('openai', 'OpenAI', 0),
+('claude', 'Claude', 0),
+('github_copilot', 'Github Copilot', 0),
+('nexos_ai', 'Nexos.ai', 0),
+('openrouter', 'OpenRouter', 0),
+('ollama', 'Ollama', 0),
+('deepseek', 'DeepSeek', 0);
+
+-- Insert configurations
+INSERT INTO ModelProviderConfigs (provider_id, type, api_url, api_key) VALUES
+('google', 'standard', 'https://generativelanguage.googleapis.com', ''),
+('openai', 'standard','https://api.openai.com/v1/', ''),
+('nexos_ai', 'standard','https://api.nexos.ai/v1/', ''),
+('openrouter', 'standard','https://openrouter.ai/api/v1/', ''),
+('claude', 'standard','https://api.anthropic.com', ''),
+('github_copilot', 'standard','https://api.githubcopilot.com/chat/completions/', ''),
+('ollama', 'local','http://localhost:11434/api/', NULL),
+('deepseek', 'standard','https://api.deepseek.com/', '');

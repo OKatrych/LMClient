@@ -1,0 +1,50 @@
+-- Query to get messages for a chat room
+getMessages:
+SELECT * FROM Messages 
+WHERE chat_room_id = ? 
+ORDER BY created_at ASC;
+
+-- Query to insert a message
+insertMessage:
+INSERT OR REPLACE INTO Messages (
+    id, chat_room_id, role, content_text, content_audio, content_type,
+    finish_reason_type, finish_reason_message, error_type, error_message, token_count
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Query to get attachments for a message
+getMessageAttachments:
+SELECT * FROM MessageAttachments 
+WHERE message_id = ?;
+
+-- Query to insert an attachment
+insertAttachment:
+INSERT OR REPLACE INTO MessageAttachments (
+    id, message_id, file_path, file_name, file_type, file_size, mime_type
+) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- Query to delete attachments for a message
+deleteMessageAttachments:
+DELETE FROM MessageAttachments WHERE message_id = ?;
+
+-- Query to upsert streaming message (insert or append content)
+upsertStreamingMessage:
+INSERT INTO Messages (
+    id, chat_room_id, role, content_text, content_audio, content_type,
+    finish_reason_type, finish_reason_message, error_type, error_message, token_count
+) VALUES (?, ?, 'system', ?, ?, 'text', ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    content_text = COALESCE(content_text, '') || excluded.content_text,
+    finish_reason_type = excluded.finish_reason_type,
+    finish_reason_message = excluded.finish_reason_message,
+    error_type = excluded.error_type,
+    error_message = excluded.error_message;
+
+-- Get a single message by ID
+getMessageById:
+SELECT * FROM Messages WHERE id = ?;
+
+-- Delete a message and all subsequent messages in the same chat room
+deleteMessageAndSubsequent:
+DELETE FROM Messages
+WHERE chat_room_id = ?
+AND created_at >= (SELECT created_at FROM Messages WHERE id = ?);

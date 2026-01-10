@@ -1,0 +1,22 @@
+-- ChatRooms queries
+
+insertChatRoom:
+INSERT INTO ChatRooms (id, name, provider_id, model_id, system_prompt, temperature, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);
+
+getChatRoom:
+SELECT * FROM ChatRooms WHERE id = ?;
+
+getAllChatRooms:
+SELECT * FROM ChatRooms ORDER BY updated_at DESC;
+
+updateChatRoom:
+UPDATE ChatRooms 
+SET name = ?, system_prompt = ?, temperature = ?, model_id = ?, updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+deleteChatRoom:
+DELETE FROM ChatRooms WHERE id = ?;
+
+observeChatRoom:
+SELECT * FROM ChatRooms WHERE id = ?;

@@ -1,0 +1,27 @@
+-- Models queries
+
+getActiveModel:
+SELECT * FROM Models WHERE provider_id = ? AND is_active = 1;
+
+getModels:
+SELECT * FROM Models WHERE provider_id = ?;
+
+setActiveModel {
+    UPDATE Models SET is_active = 0 WHERE provider_id = ?;
+    UPDATE Models SET is_active = 1 WHERE id = ?;
+    SELECT 0; -- Workaround for https://github.com/sqldelight/sqldelight/issues/5753
+}
+
+upsertModel:
+INSERT INTO Models (id, provider_id, name, capabilities, context_length, max_output_tokens, updated_at)
+VALUES (?, ?, ?, ?,  ?, ?, CURRENT_TIMESTAMP)
+ON CONFLICT(id, provider_id) DO UPDATE SET
+    name = excluded.name,
+    capabilities = excluded.capabilities,
+    context_length = excluded.context_length,
+    max_output_tokens = excluded.max_output_tokens,
+    is_active = excluded.is_active,
+    updated_at = CURRENT_TIMESTAMP;
+
+getLastModelUpdate:
+SELECT MAX(unixepoch(updated_at) * 1000) FROM Models WHERE provider_id = ?;

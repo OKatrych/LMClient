@@ -1,0 +1,24 @@
+-- ModelProviders queries
+
+selectAllModelProviders:
+SELECT p.id, p.name, p.is_active, c.type, c.api_key, c.api_url
+FROM ModelProviders p
+INNER JOIN ModelProviderConfigs c ON p.id = c.provider_id;
+
+selectModelProvider:
+SELECT p.id, p.name, p.is_active, c.type, c.api_key, c.api_url
+FROM ModelProviders p
+INNER JOIN ModelProviderConfigs c ON p.id = c.provider_id
+WHERE p.id = ?;
+
+setActiveModelProvider {
+    UPDATE ModelProviders SET is_active = 0;
+    UPDATE ModelProviders SET is_active = 1 WHERE id = ?;
+    UPDATE Models SET is_active = 0 WHERE provider_id = ?;
+    SELECT 0; -- Workaround for https://github.com/sqldelight/sqldelight/issues/5753
+}
+
+updateProviderConfig:
+UPDATE ModelProviderConfigs
+SET api_key = ?, api_url = ?
+WHERE provider_id = ?;

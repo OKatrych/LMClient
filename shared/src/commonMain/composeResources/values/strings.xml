@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">LM Client</string>
+    <string name="config_base_url">Base URL</string>
+    <string name="config_base_url_hint">Enter API base URL</string>
+    <string name="config_api_key">API Key</string>
+    <string name="config_api_key_hint">Enter authentication token</string>
+
+    <string name="new_chat_button_content_desc">New conversation</string>
+    <string name="chat_history_button_content_desc">Conversation history</string>
+    <string name="selected_model_button_no_model">Select a model</string>
+
+    <string name="search_bar_hint">Search</string>
+    <string name="settings_button_content_desc">Settings</string>
+    <string name="conversation_history_empty">Empty history</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_model_provider">Model provider</string>
+    <string name="settings_section_model_provider_empty_provider">Configure</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_about_version">Version</string>
+    <string name="settings_section_about_licenses">Licenses</string>
+    <string name="settings_section_about_github">Github repo</string>
+
+    <string name="appearance_mode_system">System</string>
+    <string name="appearance_mode_dark">Dark</string>
+    <string name="appearance_mode_light">Light</string>
+
+    <string name="model_provider_title">Model provider</string>
+    <string name="model_provider_section_active">Active</string>
+    <string name="model_provider_section_inactive">Inactive</string>
+    <string name="model_provider_button_save">Save and activate</string>
+    <string name="model_provider_button_activate">Activate</string>
+
+    <string name="licenses_title">Licenses</string>
+
+    <string name="popup_cta">Got it</string>
+    <string name="success_popup_title_connection">Connection successful</string>
+    <string name="success_popup_message_connection">You can now continue and use the chat</string>
+    <string name="error_popup_title_general">Error</string>
+    <string name="error_popup_title_connection">Connection failed</string>
+    <string name="error_message_api_key">Please check model provider API key</string>
+    <string name="error_message_internet">Please check model provider URL or your internet connection</string>
+    <string name="error_message_permission">Received "Permission denied" response from model provider</string>
+    <string name="error_message_rate_limit">Your request was hit by rate limit, please try again</string>
+    <string name="error_message_timeout">Response timeout, please try again</string>
+
+    <string name="messages_list_error_title">Incomplete response</string>
+    <string name="messages_list_error_retry_desc">Retry</string>
+    <string name="messages_list_action_row_copy_desc">Copy</string>
+    <string name="messages_list_action_row_share_desc">Share</string>
+    <string name="messages_list_action_row_retry_desc">Retry</string>
+    <string name="button_back">Back</string>
+
+    <string name="query_input_placeholder">Ask me anything...</string>
+    <string name="query_input_stop_desc">Stop generating message</string>
+    <string name="query_input_submit_desc">Submit</string>
+
+    <string name="empty_chat_no_provider">Start by selecting your model provider</string>
+    <string name="empty_chat">How can I help you today?</string>
+    <string name="configure_provider">Select provider</string>
+
+    <string name="search_icon_desc">Search</string>
+</resources>
