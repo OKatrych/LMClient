@@ -2,12 +2,15 @@
 
 package dev.olek.lmclient.data.remote.messages.koog
 
+import ai.koog.prompt.dsl.Prompt
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
 import arrow.core.Either
 import co.touchlab.kermit.Logger
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageContent
+import dev.olek.lmclient.data.models.MessageFinishReason
 import dev.olek.lmclient.data.models.Model
 import dev.olek.lmclient.data.remote.mappers.KoogMessageMapper
 import dev.olek.lmclient.data.remote.mappers.KoogStreamFrameMapper
@@ -30,21 +33,21 @@ internal class KoogPromptApi(
     private val streamFrameMapper: KoogStreamFrameMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : PromptApi {
-    private val logger = Logger.Companion.withTag("KoogPromptApi")
+    private val logger = Logger.withTag("KoogPromptApi")
 
     override suspend fun createMessage(
         prompt: List<Message>,
         model: Model,
     ): Either<LMClientError, Message.AssistantMessage> = withContext(dispatcher) {
         logger.d { "createMessage(prompt=${prompt.map { it.id }}, modelId=$model)" }
-        return@withContext Either.Companion
+        return@withContext Either
             .catch {
                 promptExecutor
                     .execute(
                         prompt = prompt.toKoogPrompt(),
                         model = model.toKoogModel(),
                     ).first()
-                    .let(messageMapper::map) as Message.AssistantMessage
+                    .let { messageMapper.map(it) } as Message.AssistantMessage
             }.mapLeft {
                 it.toDomainError()
             }
@@ -55,7 +58,7 @@ internal class KoogPromptApi(
         model: Model,
     ): Flow<PromptApi.MessageStreamResult> {
         logger.d { "createMessageStream(prompt=${prompt.map { it.id }}, modelId=$model)" }
-        require(prompt.last().content is Message.MessageContent.Text) {
+        require(prompt.last().content is MessageContent.Text) {
             "Streaming supports only text messages"
         }
 
@@ -74,7 +77,7 @@ internal class KoogPromptApi(
                     emit(
                         PromptApi.MessageStreamResult.Finished(
                             id = messageId,
-                            reason = Message.MessageFinishReason.Stop,
+                            reason = MessageFinishReason.Stop,
                         ),
                     )
                 } else {
@@ -86,7 +89,10 @@ internal class KoogPromptApi(
             }
     }
 
-    private fun List<Message>.toKoogPrompt() = prompt(Uuid.random().toHexDashString()) {
-        messages(map(messageMapper::map))
+    private suspend fun List<Message>.toKoogPrompt(): Prompt {
+        val mapped = map { messageMapper.map(it) }
+        return prompt(Uuid.random().toHexDashString()) {
+            messages(mapped)
+        }
     }
 }

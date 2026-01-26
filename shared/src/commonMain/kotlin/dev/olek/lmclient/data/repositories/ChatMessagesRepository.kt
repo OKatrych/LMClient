@@ -6,6 +6,7 @@ import dev.olek.lmclient.data.database.ModelProviderStore
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageContent
 import dev.olek.lmclient.data.models.Model
 import dev.olek.lmclient.data.models.ModelProvider
 import dev.olek.lmclient.data.remote.LMClientApiProvider
@@ -126,7 +127,7 @@ internal class ChatMessagesRepositoryImpl(
                     .observeModelProvider(chatRoom.modelProviderId)
                     .first()
 
-                if (prompt.content is Message.MessageContent.Text) {
+                if (prompt.content is MessageContent.Text) {
                     pushStreamMessage(chatHistory + prompt, chatRoom, modelProvider, model)
                 } else {
                     pushRegularMessage(chatHistory + prompt, chatRoom, modelProvider, model)
