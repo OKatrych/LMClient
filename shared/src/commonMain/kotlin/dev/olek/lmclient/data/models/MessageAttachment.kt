@@ -47,5 +47,16 @@ sealed interface AttachmentReference {
     @Serializable
     data class RemoteFile(val url: String) : AttachmentReference
     @Serializable
-    data class LocalFile(val uri: String) : AttachmentReference
+    data class LocalFile(val pathBytes: ByteArray) : AttachmentReference {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+            other as LocalFile
+            return pathBytes.contentEquals(other.pathBytes)
+        }
+
+        override fun hashCode(): Int {
+            return pathBytes.contentHashCode()
+        }
+    }
 }

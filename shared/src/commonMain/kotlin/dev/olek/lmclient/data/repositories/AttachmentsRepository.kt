@@ -2,6 +2,10 @@ package dev.olek.lmclient.data.repositories
 
 import dev.olek.lmclient.data.local.AttachmentStore
 import dev.olek.lmclient.data.models.AttachmentReference
+import io.github.vinceglb.filekit.BookmarkData
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.readBytes
 import kotlin.io.encoding.Base64
 
 /**
@@ -23,13 +27,11 @@ interface AttachmentsRepository {
      * Reads the file from the given URI, encodes it to Base64, and stores
      * the content in disc cache for later retrieval.
      *
-     * @param fileUri Platform-specific URI pointing to the user's file.
-     * @param mimeType MIME type of the file (e.g., "image/png", "application/pdf").
+     * @param attachmentFile abstracted away platform-specific file.
      * @return [AttachmentReference] pointing to the stored attachment.
      */
     suspend fun processUserAttachment(
-        fileUri: String,
-        mimeType: String,
+        attachmentFile: PlatformFile,
     ): AttachmentReference
 
     /**
@@ -68,27 +70,27 @@ interface AttachmentsRepository {
      *
      * @property base64 Base64-encoded content of the attachment.
      */
-    value class AttachmentContent(val base64: String)
+    data class AttachmentContent(val base64: String)
 }
 
 internal class AttachmentsRepositoryImpl(
     private val attachmentStore: AttachmentStore,
 ) : AttachmentsRepository {
     override suspend fun processUserAttachment(
-        fileUri: String,
-        mimeType: String,
+        attachmentFile: PlatformFile,
     ): AttachmentReference {
-        val base64 = Base64.encode(readFileBytes(fileUri))
-        val uri = attachmentStore.saveAttachment(base64, mimeType)
-        return AttachmentReference.LocalFile(uri)
+        val base64 = Base64.encode(attachmentFile.readBytes())
+        val mimeType = attachmentFile.mimeType().toString()
+        val bookmarkData = attachmentStore.saveAttachment(base64, mimeType)
+        return AttachmentReference.LocalFile(pathBytes = bookmarkData.bytes)
     }
 
     override suspend fun processAssistantAttachment(
         base64: String,
         mimeType: String,
     ): AttachmentReference {
-        val uri = attachmentStore.saveAttachment(base64, mimeType)
-        return AttachmentReference.LocalFile(uri)
+        val bookmarkData = attachmentStore.saveAttachment(base64, mimeType)
+        return AttachmentReference.LocalFile(pathBytes = bookmarkData.bytes)
     }
 
     override suspend fun getAttachmentContent(
@@ -97,7 +99,9 @@ internal class AttachmentsRepositoryImpl(
         require(reference is AttachmentReference.LocalFile) {
             "Only local files are supported for now"
         }
-        val base64 = attachmentStore.getAttachmentContent(reference.uri)
+        val base64 = attachmentStore.getAttachmentContent(
+            bookmarkData = BookmarkData(reference.pathBytes),
+        )
         return AttachmentsRepository.AttachmentContent(base64)
     }
 
@@ -107,10 +111,6 @@ internal class AttachmentsRepositoryImpl(
         require(reference is AttachmentReference.LocalFile) {
             "Only local files are supported for now"
         }
-        attachmentStore.removeAttachment(reference.uri)
-    }
-
-    private suspend fun readFileBytes(uri: String): ByteArray {
-        TODO()
+        attachmentStore.removeAttachment(BookmarkData(reference.pathBytes))
     }
 }

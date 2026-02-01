@@ -9,7 +9,6 @@ import lm_client.shared.generated.resources.Res
 import lm_client.shared.generated.resources.ic_claude
 import lm_client.shared.generated.resources.ic_deepseek
 import lm_client.shared.generated.resources.ic_gemini
-import lm_client.shared.generated.resources.ic_github
 import lm_client.shared.generated.resources.ic_model_provider
 import lm_client.shared.generated.resources.ic_nexos
 import lm_client.shared.generated.resources.ic_ollama

@@ -6,7 +6,7 @@ import co.touchlab.kermit.Logger
 import com.arkivanov.decompose.ComponentContext
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.Message
-import dev.olek.lmclient.data.models.Message.MessageContent
+import dev.olek.lmclient.data.models.MessageContent
 import dev.olek.lmclient.data.repositories.ChatMessagesRepository
 import dev.olek.lmclient.data.repositories.ChatRoomRepository
 import dev.olek.lmclient.data.repositories.ModelProviderRepository

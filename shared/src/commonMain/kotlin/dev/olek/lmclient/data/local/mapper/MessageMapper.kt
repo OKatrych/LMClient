@@ -3,7 +3,8 @@ package dev.olek.lmclient.data.local.mapper
 import dev.olek.lmclient.data.databases.Messages
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
-import dev.olek.lmclient.data.models.Message.MessageFinishReason
+import dev.olek.lmclient.data.models.MessageContent
+import dev.olek.lmclient.data.models.MessageFinishReason
 import org.koin.core.annotation.Factory
 
 internal typealias MessageDbModel = Messages
@@ -32,8 +33,8 @@ internal class MessageMapper {
 
     fun mapFromDbModel(message: MessageDbModel): Message {
         val content = when (message.content_type) {
-            "text" -> Message.MessageContent.Text(message.content_text!!)
-            "audio" -> Message.MessageContent.Audio(message.content_audio!!)
+            "text" -> MessageContent.Text(message.content_text!!)
+            "audio" -> MessageContent.Audio(message.content_audio!!)
             else -> error("Unknown message content type: ${message.content_type}")
         }
 
@@ -84,11 +85,11 @@ internal class MessageMapper {
         is Message.AssistantMessage -> "system"
     }
 
-    private fun Message.getContentText() = (this.content as? Message.MessageContent.Text)?.text
+    private fun Message.getContentText() = (this.content as? MessageContent.Text)?.text
 
     private fun Message.getContentType() = when (this.content) {
-        is Message.MessageContent.Audio -> "audio"
-        is Message.MessageContent.Text -> "text"
+        is MessageContent.Audio -> "audio"
+        is MessageContent.Text -> "text"
     }
 
     private fun Message.getFinishReasonTypeAndMessage() = when (this) {

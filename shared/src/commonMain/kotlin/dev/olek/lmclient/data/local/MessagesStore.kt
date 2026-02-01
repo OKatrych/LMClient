@@ -6,6 +6,7 @@ import dev.olek.lmclient.shared.data.Database
 import dev.olek.lmclient.data.local.mapper.MessageMapper
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageFinishReason
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -54,7 +55,7 @@ internal class MessagesStore(
         messageId: String,
         chatRoomId: String,
         contentChunk: String,
-        finishReason: Message.MessageFinishReason? = null,
+        finishReason: MessageFinishReason? = null,
         error: LMClientError? = null,
     ) = withContext(dispatcher) {
         val (finishReasonType, finishReasonMessage) = messageMapper.getFinishReasonDbFormat(

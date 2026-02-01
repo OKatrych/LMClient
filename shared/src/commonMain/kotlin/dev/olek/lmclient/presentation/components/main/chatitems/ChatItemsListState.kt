@@ -2,7 +2,7 @@ package dev.olek.lmclient.presentation.components.main.chatitems
 
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.LMClientError
-import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageFinishReason
 import com.mikepenz.markdown.model.State as MState
 
 data class ChatItemsListState(
@@ -19,7 +19,7 @@ data class ChatItemsListState(
         data class AssistantItem(
             override val id: String,
             val content: ChatItemContent,
-            val finishReason: Message.MessageFinishReason? = null,
+            val finishReason: MessageFinishReason? = null,
             val error: LMClientError? = null,
         ) : ChatItem
 
