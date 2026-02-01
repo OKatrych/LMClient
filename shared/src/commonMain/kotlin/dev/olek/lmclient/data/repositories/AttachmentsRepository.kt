@@ -6,6 +6,7 @@ import io.github.vinceglb.filekit.BookmarkData
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.mimeType
 import io.github.vinceglb.filekit.readBytes
+import org.koin.core.annotation.Single
 import kotlin.io.encoding.Base64
 
 /**
@@ -73,6 +74,7 @@ interface AttachmentsRepository {
     data class AttachmentContent(val base64: String)
 }
 
+@Single(binds = [AttachmentsRepository::class])
 internal class AttachmentsRepositoryImpl(
     private val attachmentStore: AttachmentStore,
 ) : AttachmentsRepository {
