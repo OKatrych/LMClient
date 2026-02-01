@@ -1,4 +1,4 @@
-package dev.olek.lmclient.data.database
+package dev.olek.lmclient.data.local
 
 import app.cash.sqldelight.db.SqlDriver
 import dev.olek.lmclient.shared.data.Database

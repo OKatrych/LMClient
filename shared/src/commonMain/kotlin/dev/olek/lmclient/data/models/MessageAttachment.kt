@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface MessageAttachment {
-    val content: AttachmentContent
+    val content: AttachmentReference
 
     val format: String
     val mimeType: String
@@ -12,7 +12,7 @@ sealed interface MessageAttachment {
 
     @Serializable
     data class Image(
-        override val content: AttachmentContent,
+        override val content: AttachmentReference,
         override val format: String,
         override val mimeType: String,
         override val fileName: String?,
@@ -20,7 +20,7 @@ sealed interface MessageAttachment {
 
     @Serializable
     data class Video(
-        override val content: AttachmentContent,
+        override val content: AttachmentReference,
         override val format: String,
         override val mimeType: String,
         override val fileName: String?
@@ -28,7 +28,7 @@ sealed interface MessageAttachment {
 
     @Serializable
     data class Audio(
-        override val content: AttachmentContent,
+        override val content: AttachmentReference,
         override val format: String,
         override val mimeType: String,
         override val fileName: String?
@@ -36,23 +36,16 @@ sealed interface MessageAttachment {
 
     @Serializable
     data class File(
-        override val content: AttachmentContent,
+        override val content: AttachmentReference,
         override val format: String,
         override val mimeType: String,
         override val fileName: String?
     ) : MessageAttachment
 }
 
-sealed interface AttachmentContent {
-    /**
-     * File uploaded via Files API to providers storage
-     */
+sealed interface AttachmentReference {
     @Serializable
-    data class RemoteFile(val url: String) : AttachmentContent
-
-    /**
-     * File stored locally in Base64 format
-     */
+    data class RemoteFile(val url: String) : AttachmentReference
     @Serializable
-    data class LocalFile(val uri: String) : AttachmentContent
+    data class LocalFile(val uri: String) : AttachmentReference
 }

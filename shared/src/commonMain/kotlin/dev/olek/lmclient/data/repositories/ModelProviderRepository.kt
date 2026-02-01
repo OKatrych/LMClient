@@ -4,7 +4,7 @@ package dev.olek.lmclient.data.repositories
 
 import arrow.core.Either
 import co.touchlab.kermit.Logger
-import dev.olek.lmclient.data.database.ModelProviderStore
+import dev.olek.lmclient.data.local.ModelProviderStore
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Model
 import dev.olek.lmclient.data.models.ModelProvider

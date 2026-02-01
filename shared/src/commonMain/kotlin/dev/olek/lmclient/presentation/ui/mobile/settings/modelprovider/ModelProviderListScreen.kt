@@ -165,7 +165,6 @@ private fun ModelProviderListScreenPreview() = ScreenPreviewWrapper {
                     LMClientModelProvider.Google,
                     LMClientModelProvider.NexosAI,
                     LMClientModelProvider.OpenRouter,
-                    LMClientModelProvider.GithubCopilot,
                     LMClientModelProvider.DeepSeek,
                     LMClientModelProvider.Ollama,
                 ).map {

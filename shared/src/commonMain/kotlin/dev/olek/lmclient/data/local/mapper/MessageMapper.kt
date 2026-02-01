@@ -1,4 +1,4 @@
-package dev.olek.lmclient.data.database.mapper
+package dev.olek.lmclient.data.local.mapper
 
 import dev.olek.lmclient.data.databases.Messages
 import dev.olek.lmclient.data.models.LMClientError

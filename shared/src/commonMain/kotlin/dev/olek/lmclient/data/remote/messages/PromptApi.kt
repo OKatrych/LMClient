@@ -3,6 +3,7 @@ package dev.olek.lmclient.data.remote.messages
 import arrow.core.Either
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageFinishReason
 import dev.olek.lmclient.data.models.Model
 import kotlinx.coroutines.flow.Flow
 
@@ -26,7 +27,7 @@ interface PromptApi {
 
         data class Finished(
             val id: String,
-            val reason: Message.MessageFinishReason?,
+            val reason: MessageFinishReason?,
         ) : MessageStreamResult
 
         data class Error(val error: LMClientError) : MessageStreamResult

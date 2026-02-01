@@ -1,9 +1,9 @@
-package dev.olek.lmclient.data.database
+package dev.olek.lmclient.data.local
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.olek.lmclient.shared.data.Database
-import dev.olek.lmclient.data.database.mapper.MessageMapper
+import dev.olek.lmclient.data.local.mapper.MessageMapper
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
 import kotlinx.coroutines.CoroutineDispatcher

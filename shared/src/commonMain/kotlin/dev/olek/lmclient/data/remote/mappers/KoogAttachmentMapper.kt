@@ -1,19 +1,15 @@
 package dev.olek.lmclient.data.remote.mappers
 
 import ai.koog.prompt.message.ContentPart
-import arrow.core.getOrElse
-import dev.olek.lmclient.data.models.AttachmentContent
-import dev.olek.lmclient.data.models.AttachmentContent.LocalFile
-import dev.olek.lmclient.data.models.AttachmentContent.RemoteFile
+import dev.olek.lmclient.data.models.AttachmentReference
 import dev.olek.lmclient.data.models.MessageAttachment
-import dev.olek.lmclient.data.repositories.FilesRepository
+import dev.olek.lmclient.data.repositories.AttachmentsRepository
 import org.koin.core.annotation.Factory
-import kotlin.io.encoding.Base64
 import ai.koog.prompt.message.AttachmentContent as KoogAttachmentContent
 
 @Factory
 internal class KoogAttachmentMapper(
-    private val filesRepository: FilesRepository,
+    private val attachmentsRepository: AttachmentsRepository,
 ) {
 
     suspend fun mapToDomain(part: ContentPart): MessageAttachment? {
@@ -84,35 +80,34 @@ internal class KoogAttachmentMapper(
 
     private suspend fun KoogAttachmentContent.toDomainAttachmentContent(
         mimeType: String,
-    ): AttachmentContent {
+    ): AttachmentReference {
         return when (this) {
-            is KoogAttachmentContent.URL -> RemoteFile(url = url)
-            is KoogAttachmentContent.Binary.Base64 -> filesRepository.processFile(
-                base64 = base64,
-                mimeType = mimeType,
-            ).getOrElse { throw Exception(it.toString()) }
+            is KoogAttachmentContent.URL -> AttachmentReference.RemoteFile(url = url)
+            is KoogAttachmentContent.Binary.Base64 ->
+                attachmentsRepository.processAssistantAttachment(
+                    base64 = base64,
+                    mimeType = mimeType,
+                )
 
-            is KoogAttachmentContent.Binary.Bytes -> filesRepository.processFile(
-                base64 = asBase64(),
-                mimeType = mimeType,
-            ).getOrElse { throw Exception(it.toString()) }
+            is KoogAttachmentContent.Binary.Bytes ->
+                attachmentsRepository.processAssistantAttachment(
+                    base64 = asBase64(),
+                    mimeType = mimeType,
+                )
 
             is KoogAttachmentContent.PlainText -> error("Should not happen")
         }
     }
 
-    private suspend fun AttachmentContent.toKoogAttachmentContent(): KoogAttachmentContent {
+    private suspend fun AttachmentReference.toKoogAttachmentContent(): KoogAttachmentContent {
         return when (this) {
-            is LocalFile -> {
+            is AttachmentReference.LocalFile -> {
                 KoogAttachmentContent.Binary.Base64(
-                    Base64.encode(
-                        filesRepository.getFileBytes(this)
-                            .getOrElse { throw Exception(it.toString()) }
-                    )
+                    base64 = attachmentsRepository.getAttachmentContent(this).base64
                 )
             }
 
-            is RemoteFile -> {
+            is AttachmentReference.RemoteFile -> {
                 KoogAttachmentContent.URL(url = url)
             }
         }

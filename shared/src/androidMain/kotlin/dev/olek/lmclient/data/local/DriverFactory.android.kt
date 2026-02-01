@@ -1,4 +1,4 @@
-package dev.olek.lmclient.data.database
+package dev.olek.lmclient.data.local
 
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase

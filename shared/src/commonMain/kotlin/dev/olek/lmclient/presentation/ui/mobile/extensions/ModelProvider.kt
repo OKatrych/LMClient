@@ -20,7 +20,6 @@ import org.jetbrains.compose.resources.DrawableResource
 @Composable
 fun ModelProvider.getIconRes(): DrawableResource = when (this.id) {
     LMClientModelProvider.OpenAI.id -> Res.drawable.ic_openai
-    LMClientModelProvider.GithubCopilot.id -> Res.drawable.ic_github
     LMClientModelProvider.Google.id -> Res.drawable.ic_gemini
     LMClientModelProvider.Claude.id -> Res.drawable.ic_claude
     LMClientModelProvider.NexosAI.id -> Res.drawable.ic_nexos

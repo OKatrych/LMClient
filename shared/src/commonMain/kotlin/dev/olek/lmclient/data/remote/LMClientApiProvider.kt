@@ -160,12 +160,12 @@ internal class LMClientApiProviderImpl(
                     isDebug = isDebug,
                 ),
             )
-            LMClientModelProvider.GithubCopilot -> TODO()
+
             LMClientModelProvider.DeepSeek,
             LMClientModelProvider.Google,
             LMClientModelProvider.Ollama,
             LMClientModelProvider.OpenRouter,
-            -> KoogModelsApi(
+                -> KoogModelsApi(
                 provider = LMClientModelProvider
                     .fromId(
                         modelProvider.id,
@@ -248,7 +248,7 @@ internal class LMClientApiProviderImpl(
                     ),
                 )
             }
+
             LMClientModelProvider.DeepSeek -> TODO()
-            LMClientModelProvider.GithubCopilot -> TODO()
         }
 }

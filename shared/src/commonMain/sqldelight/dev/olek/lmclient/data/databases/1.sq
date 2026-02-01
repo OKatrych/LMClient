@@ -77,7 +77,6 @@ INSERT INTO ModelProviders (id, name, is_active) VALUES
 ('google', 'Google AI Studio', 0),
 ('openai', 'OpenAI', 0),
 ('claude', 'Claude', 0),
-('github_copilot', 'Github Copilot', 0),
 ('nexos_ai', 'Nexos.ai', 0),
 ('openrouter', 'OpenRouter', 0),
 ('ollama', 'Ollama', 0),
@@ -90,6 +89,5 @@ INSERT INTO ModelProviderConfigs (provider_id, type, api_url, api_key) VALUES
 ('nexos_ai', 'standard','https://api.nexos.ai/v1/', ''),
 ('openrouter', 'standard','https://openrouter.ai/api/v1/', ''),
 ('claude', 'standard','https://api.anthropic.com', ''),
-('github_copilot', 'standard','https://api.githubcopilot.com/chat/completions/', ''),
 ('ollama', 'local','http://localhost:11434/api/', NULL),
 ('deepseek', 'standard','https://api.deepseek.com/', '');

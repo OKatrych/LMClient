@@ -28,7 +28,7 @@ This is a personal side project I work on in my free time to learn new technolog
 
 ## In progress
 
-1. [ ] Support for OpenRouter, Ollama, DeepSeek, GitHub Copilot providers
+1. [ ] Support for OpenRouter, Ollama, DeepSeek, providers
 2. [ ] Image attachments (input/output)
 3. [ ] Audio attachments (input/output)
 4. [ ] File attachments (output)

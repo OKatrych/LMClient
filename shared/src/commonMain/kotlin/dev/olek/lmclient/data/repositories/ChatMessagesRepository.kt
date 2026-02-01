@@ -1,8 +1,8 @@
 package dev.olek.lmclient.data.repositories
 
 import co.touchlab.kermit.Logger
-import dev.olek.lmclient.data.database.MessagesStore
-import dev.olek.lmclient.data.database.ModelProviderStore
+import dev.olek.lmclient.data.local.MessagesStore
+import dev.olek.lmclient.data.local.ModelProviderStore
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
