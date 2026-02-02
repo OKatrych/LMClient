@@ -292,7 +292,8 @@ class MessageAttachmentMapperTest {
     @Test
     fun `roundtrip attachment with special characters in URL`() {
         val original = MessageAttachment(
-            content = AttachmentContentReference.RemoteFile("https://example.com/files/path%20with%20spaces/file%23name.txt"),
+            content = AttachmentContentReference
+                .RemoteFile("https://example.com/files/path%20with%20spaces/file%23name.txt"),
             format = "txt",
             mimeType = "text/plain",
             fileName = "file with spaces.txt",

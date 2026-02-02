@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package dev.olek.lmclient.data.remote.utils
 
 import ai.koog.prompt.llm.LLMProvider
