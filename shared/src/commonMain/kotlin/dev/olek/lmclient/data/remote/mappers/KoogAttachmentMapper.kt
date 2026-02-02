@@ -1,7 +1,7 @@
 package dev.olek.lmclient.data.remote.mappers
 
 import ai.koog.prompt.message.ContentPart
-import dev.olek.lmclient.data.models.AttachmentReference
+import dev.olek.lmclient.data.models.AttachmentContentReference
 import dev.olek.lmclient.data.models.MessageAttachment
 import dev.olek.lmclient.data.repositories.AttachmentsRepository
 import org.koin.core.annotation.Factory
@@ -14,28 +14,28 @@ internal class KoogAttachmentMapper(
 
     suspend fun mapToDomain(part: ContentPart): MessageAttachment? {
         return when (part) {
-            is ContentPart.Image -> MessageAttachment.Image(
+            is ContentPart.Image -> MessageAttachment(
                 content = part.content.toDomainAttachmentContent(part.mimeType),
                 format = part.format,
                 mimeType = part.mimeType,
                 fileName = part.fileName,
             )
 
-            is ContentPart.Audio -> MessageAttachment.Audio(
+            is ContentPart.Audio -> MessageAttachment(
                 content = part.content.toDomainAttachmentContent(part.mimeType),
                 format = part.format,
                 mimeType = part.mimeType,
                 fileName = part.fileName,
             )
 
-            is ContentPart.Video -> MessageAttachment.Video(
+            is ContentPart.Video -> MessageAttachment(
                 content = part.content.toDomainAttachmentContent(part.mimeType),
                 format = part.format,
                 mimeType = part.mimeType,
                 fileName = part.fileName,
             )
 
-            is ContentPart.File -> MessageAttachment.File(
+            is ContentPart.File -> MessageAttachment(
                 content = part.content.toDomainAttachmentContent(part.mimeType),
                 format = part.format,
                 mimeType = part.mimeType,
@@ -47,30 +47,31 @@ internal class KoogAttachmentMapper(
     }
 
     suspend fun mapToKoog(attachment: MessageAttachment): ContentPart {
-        return when (attachment) {
-            is MessageAttachment.Image -> ContentPart.Image(
-                content = attachment.content.toKoogAttachmentContent(),
+        val content = attachment.content.toKoogAttachmentContent()
+        return when {
+            attachment.mimeType.startsWith("image/") -> ContentPart.Image(
+                content = content,
                 format = attachment.format,
                 mimeType = attachment.mimeType,
                 fileName = attachment.fileName,
             )
 
-            is MessageAttachment.Audio -> ContentPart.Audio(
-                content = attachment.content.toKoogAttachmentContent(),
+            attachment.mimeType.startsWith("audio/") -> ContentPart.Audio(
+                content = content,
                 format = attachment.format,
                 mimeType = attachment.mimeType,
                 fileName = attachment.fileName,
             )
 
-            is MessageAttachment.Video -> ContentPart.Video(
-                content = attachment.content.toKoogAttachmentContent(),
+            attachment.mimeType.startsWith("video/") -> ContentPart.Video(
+                content = content,
                 format = attachment.format,
                 mimeType = attachment.mimeType,
                 fileName = attachment.fileName,
             )
 
-            is MessageAttachment.File -> ContentPart.File(
-                content = attachment.content.toKoogAttachmentContent(),
+            else -> ContentPart.File(
+                content = content,
                 format = attachment.format,
                 mimeType = attachment.mimeType,
                 fileName = attachment.fileName,
@@ -80,9 +81,9 @@ internal class KoogAttachmentMapper(
 
     private suspend fun KoogAttachmentContent.toDomainAttachmentContent(
         mimeType: String,
-    ): AttachmentReference {
+    ): AttachmentContentReference {
         return when (this) {
-            is KoogAttachmentContent.URL -> AttachmentReference.RemoteFile(url = url)
+            is KoogAttachmentContent.URL -> AttachmentContentReference.RemoteFile(url = url)
             is KoogAttachmentContent.Binary.Base64 ->
                 attachmentsRepository.processAssistantAttachment(
                     base64 = base64,
@@ -99,15 +100,15 @@ internal class KoogAttachmentMapper(
         }
     }
 
-    private suspend fun AttachmentReference.toKoogAttachmentContent(): KoogAttachmentContent {
+    private suspend fun AttachmentContentReference.toKoogAttachmentContent(): KoogAttachmentContent {
         return when (this) {
-            is AttachmentReference.LocalFile -> {
+            is AttachmentContentReference.LocalFile -> {
                 KoogAttachmentContent.Binary.Base64(
                     base64 = attachmentsRepository.getAttachmentContent(this).base64
                 )
             }
 
-            is AttachmentReference.RemoteFile -> {
+            is AttachmentContentReference.RemoteFile -> {
                 KoogAttachmentContent.URL(url = url)
             }
         }

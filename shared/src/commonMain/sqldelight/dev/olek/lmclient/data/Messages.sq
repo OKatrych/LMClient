@@ -19,7 +19,7 @@ WHERE message_id = ?;
 -- Query to insert an attachment
 insertAttachment:
 INSERT OR REPLACE INTO MessageAttachments (
-    id, message_id, file_path, file_name, file_type, file_size, mime_type
+    id, message_id, content_reference_type, content_reference, file_type, mime_type, file_name
 ) VALUES (?, ?, ?, ?, ?, ?, ?);
 
 -- Query to delete attachments for a message

@@ -2,6 +2,7 @@ package dev.olek.lmclient.data.local
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import dev.olek.lmclient.data.local.mapper.MessageAttachmentMapper
 import dev.olek.lmclient.shared.data.Database
 import dev.olek.lmclient.data.local.mapper.MessageMapper
 import dev.olek.lmclient.data.models.LMClientError
@@ -21,13 +22,22 @@ import org.koin.core.annotation.Single
 internal class MessagesStore(
     private val database: Database,
     private val messageMapper: MessageMapper,
+    private val messageAttachmentMapper: MessageAttachmentMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     fun observeMessages(chatRoomId: String): Flow<List<Message>> = database.messagesQueries
         .getMessages(chatRoomId)
         .asFlow()
         .mapToList(dispatcher)
-        .map { messages -> messages.map(messageMapper::mapFromDbModel) }
+        .map { messages ->
+            messages.map { messageDb ->
+                val attachmentsDb = database.messagesQueries
+                    .getMessageAttachments(messageDb.id)
+                    .executeAsList()
+                val attachments = attachmentsDb.map(messageAttachmentMapper::mapFromDbModel)
+                messageMapper.mapFromDbModel(messageDb, attachments)
+            }
+        }
         .distinctUntilChanged()
         .flowOn(dispatcher)
 
@@ -48,6 +58,22 @@ internal class MessagesStore(
                 error_message = dbModel.error_message,
                 token_count = dbModel.token_count,
             )
+
+            message.attachments.forEach { attachment ->
+                val attachmentDb = messageAttachmentMapper.mapToDbModel(
+                    attachment = attachment,
+                    messageId = message.id
+                )
+                database.messagesQueries.insertAttachment(
+                    id = attachmentDb.id,
+                    message_id = attachmentDb.message_id,
+                    content_reference_type = attachmentDb.content_reference_type,
+                    content_reference = attachmentDb.content_reference,
+                    file_type = attachmentDb.file_type,
+                    mime_type = attachmentDb.mime_type,
+                    file_name = attachmentDb.file_name,
+                )
+            }
         }
     }
 
@@ -80,7 +106,13 @@ internal class MessagesStore(
         database.messagesQueries
             .getMessageById(messageId)
             .executeAsOneOrNull()
-            ?.let(messageMapper::mapFromDbModel)
+            ?.let { messageDb ->
+                val attachmentsDb = database.messagesQueries
+                    .getMessageAttachments(messageId)
+                    .executeAsList()
+                val attachments = attachmentsDb.map(messageAttachmentMapper::mapFromDbModel)
+                messageMapper.mapFromDbModel(messageDb, attachments)
+            }
     }
 
     suspend fun deleteMessageAndSubsequent(

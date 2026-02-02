@@ -3,6 +3,7 @@ package dev.olek.lmclient.data.local.mapper
 import dev.olek.lmclient.data.databases.Messages
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageAttachment
 import dev.olek.lmclient.data.models.MessageContent
 import dev.olek.lmclient.data.models.MessageFinishReason
 import org.koin.core.annotation.Factory
@@ -31,7 +32,7 @@ internal class MessageMapper {
         )
     }
 
-    fun mapFromDbModel(message: MessageDbModel): Message {
+    fun mapFromDbModel(message: MessageDbModel, attachments: List<MessageAttachment>): Message {
         val content = when (message.content_type) {
             "text" -> MessageContent.Text(message.content_text!!)
             "audio" -> MessageContent.Audio(message.content_audio!!)
@@ -42,13 +43,13 @@ internal class MessageMapper {
             "user" -> Message.UserMessage(
                 id = message.id,
                 content = content,
-                attachments = emptyList(),
+                attachments = attachments,
             )
 
             "system" -> Message.AssistantMessage(
                 id = message.id,
                 content = content,
-                attachments = emptyList(),
+                attachments = attachments,
                 finishReason = message.getFinishReason(),
                 error = message.getError(),
             )

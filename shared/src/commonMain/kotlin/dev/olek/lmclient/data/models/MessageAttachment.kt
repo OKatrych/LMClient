@@ -3,51 +3,18 @@ package dev.olek.lmclient.data.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface MessageAttachment {
-    val content: AttachmentReference
+data class MessageAttachment(
+    val content: AttachmentContentReference,
+    val format: String,
+    val mimeType: String,
+    val fileName: String?,
+)
 
-    val format: String
-    val mimeType: String
-    val fileName: String?
-
+sealed interface AttachmentContentReference {
     @Serializable
-    data class Image(
-        override val content: AttachmentReference,
-        override val format: String,
-        override val mimeType: String,
-        override val fileName: String?,
-    ) : MessageAttachment
-
+    data class RemoteFile(val url: String) : AttachmentContentReference
     @Serializable
-    data class Video(
-        override val content: AttachmentReference,
-        override val format: String,
-        override val mimeType: String,
-        override val fileName: String?
-    ) : MessageAttachment
-
-    @Serializable
-    data class Audio(
-        override val content: AttachmentReference,
-        override val format: String,
-        override val mimeType: String,
-        override val fileName: String?
-    ) : MessageAttachment
-
-    @Serializable
-    data class File(
-        override val content: AttachmentReference,
-        override val format: String,
-        override val mimeType: String,
-        override val fileName: String?
-    ) : MessageAttachment
-}
-
-sealed interface AttachmentReference {
-    @Serializable
-    data class RemoteFile(val url: String) : AttachmentReference
-    @Serializable
-    data class LocalFile(val pathBytes: ByteArray) : AttachmentReference {
+    data class LocalFile(val pathBytes: ByteArray) : AttachmentContentReference {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
