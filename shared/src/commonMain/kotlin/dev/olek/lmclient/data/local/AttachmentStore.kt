@@ -21,8 +21,34 @@ import org.koin.core.annotation.Single
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@Single
-class AttachmentStore {
+/**
+ * Interface for storing and retrieving attachment content.
+ */
+interface AttachmentStore {
+    /**
+     * Saves attachment content to storage.
+     * @param base64 Base64-encoded content
+     * @param mimeType MIME type of the content
+     * @return [BookmarkData] reference to the saved file
+     */
+    suspend fun saveAttachment(base64: String, mimeType: String): BookmarkData
+
+    /**
+     * Retrieves attachment content from storage.
+     * @param bookmarkData Reference to the stored attachment
+     * @return Base64-encoded content
+     */
+    suspend fun getAttachmentContent(bookmarkData: BookmarkData): String
+
+    /**
+     * Removes an attachment from storage.
+     * @param bookmarkData Reference to the attachment to remove
+     */
+    suspend fun removeAttachment(bookmarkData: BookmarkData)
+}
+
+@Single(binds = [AttachmentStore::class])
+internal class AttachmentStoreImpl : AttachmentStore {
     private val json = Json { ignoreUnknownKeys = true }
     private val attachmentsDir: PlatformFile by lazy {
         (FileKit.filesDir / "attachments").also {
@@ -30,11 +56,8 @@ class AttachmentStore {
         }
     }
 
-    /**
-     * @return [BookmarkData] of saved file
-     */
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun saveAttachment(
+    override suspend fun saveAttachment(
         base64: String,
         mimeType: String,
     ): BookmarkData = withContext(Dispatchers.IO) {
@@ -45,10 +68,7 @@ class AttachmentStore {
         file.bookmarkData()
     }
 
-    /**
-     * @return Base64 encoded file
-     */
-    suspend fun getAttachmentContent(
+    override suspend fun getAttachmentContent(
         bookmarkData: BookmarkData,
     ): String = withContext(Dispatchers.IO) {
         val file = PlatformFile.fromBookmarkData(bookmarkData)
@@ -56,7 +76,7 @@ class AttachmentStore {
         stored.content
     }
 
-    suspend fun removeAttachment(
+    override suspend fun removeAttachment(
         bookmarkData: BookmarkData,
     ) = withContext(Dispatchers.IO) {
         PlatformFile.fromBookmarkData(bookmarkData).delete(mustExist = false)

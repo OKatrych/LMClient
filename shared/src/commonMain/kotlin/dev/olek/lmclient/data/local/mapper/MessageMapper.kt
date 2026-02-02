@@ -142,7 +142,7 @@ internal class MessageMapper {
         "permission_denied" -> LMClientError.PermissionDenied
         "rate_limit" -> LMClientError.RateLimit
         "timeout" -> LMClientError.Timeout
-        "unknown" -> LMClientError.UnknownError(finish_reason_message ?: "Unknown")
+        "unknown" -> LMClientError.UnknownError(error_message ?: "Unknown")
         null -> null
         else -> error("Unknown error type: $error_type")
     }
