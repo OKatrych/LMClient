@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalHazeMaterialsApi::class)
 
-package dev.olek.lmclient.presentation.ui.mobile.main.chat
+package dev.olek.lmclient.presentation.ui.mobile.main.chat.queryinput
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -32,10 +32,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.olek.lmclient.data.models.AttachmentContentReference
+import dev.olek.lmclient.data.models.MessageAttachment
 import dev.olek.lmclient.presentation.components.main.QueryInputComponent
+import dev.olek.lmclient.presentation.components.main.QueryInputComponentPreview
 import dev.olek.lmclient.presentation.theme.AppTheme
+import dev.olek.lmclient.presentation.ui.mobile.common.PreviewWrapper
 import dev.olek.lmclient.presentation.util.collectAsStateMultiplatform
 import lm_client.shared.generated.resources.Res
 import lm_client.shared.generated.resources.ic_arrow_up
@@ -83,12 +88,20 @@ internal fun QueryInputBox(
 @Composable
 private fun QueryInputBoxContent(
     query: String,
-    isLoading: Boolean,
     onQueryChange: (String) -> Unit,
+    attachments: List<MessageAttachment>,
+    onTakeProtoClick: () -> Unit,
+    onAddAttachmentClick: () -> Unit,
+    onRemoveAttachmentClick: () -> Unit,
+    isLoading: Boolean,
     onSubmit: () -> Unit,
     onCancel: () -> Unit,
 ) {
     Column {
+        AttachmentsRow(
+            attachments = attachments,
+            onRemoveAttachmentClick = onRemoveAttachmentClick,
+        )
         InputField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,6 +114,12 @@ private fun QueryInputBoxContent(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
                 .padding(bottom = 16.dp),
+            leadingButton = {
+                // TODO this should be changed to have two buttons:
+                //  "take photo" and "attach attachment"
+                //  use ic_camera and "ic_attachment" drawables
+                //  respect clickable area 48.dp
+            },
             trailingButton = {
                 RoundedAnimatedButton(
                     onClick = if (isLoading) onCancel else onSubmit,
@@ -119,7 +138,11 @@ private fun QueryInputBoxContent(
 }
 
 @Composable
-private fun InputField(query: String, onQueryChange: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun InputField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     TextField(
         modifier = modifier,
         value = query,
@@ -211,6 +234,63 @@ private fun SubmitIcon(modifier: Modifier = Modifier) {
         painter = painterResource(Res.drawable.ic_arrow_up),
         tint = AppTheme.colors.onPrimary,
         contentDescription = stringResource(Res.string.query_input_submit_desc),
+    )
+}
+
+@Composable
+@Preview
+private fun QueryInputBoxPreview() = PreviewWrapper {
+    QueryInputBox(
+        component = QueryInputComponentPreview(),
+    )
+}
+
+@Composable
+@Preview
+private fun QueryInputBoxLoadingPreview() = PreviewWrapper {
+    QueryInputBox(
+        component = QueryInputComponentPreview(
+            QueryInputComponent.State(isEnabled = true, isLoading = true)
+        ),
+    )
+}
+
+@Composable
+@Preview
+private fun QueryInputBoxTypingPreview() = PreviewWrapper {
+    QueryInputBox(
+        component = QueryInputComponentPreview(
+            QueryInputComponent.State(isEnabled = true, query = "Tell me about me")
+        ),
+    )
+}
+
+@Composable
+@Preview
+private fun QueryInputBoxWithAttachmentsPreview() = PreviewWrapper {
+    QueryInputBox(
+        component = QueryInputComponentPreview(
+            QueryInputComponent.State(
+                isEnabled = true,
+                query = "Tell me about me",
+                attachments = listOf(
+                    MessageAttachment(
+                        content = AttachmentContentReference
+                            .LocalFile("test/path".encodeToByteArray()),
+                        format = "pdf",
+                        fileName = "file",
+                        mimeType = "application/pdf",
+                    ),
+                    MessageAttachment(
+                        content = AttachmentContentReference
+                            .LocalFile("test/path".encodeToByteArray()),
+                        format = "png",
+                        fileName = "image",
+                        mimeType = "image/png",
+                    )
+                )
+            )
+        ),
     )
 }
 

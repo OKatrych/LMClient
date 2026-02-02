@@ -6,6 +6,7 @@ import co.touchlab.kermit.Logger
 import com.arkivanov.decompose.ComponentContext
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageAttachment
 import dev.olek.lmclient.data.models.MessageContent
 import dev.olek.lmclient.data.repositories.ChatMessagesRepository
 import dev.olek.lmclient.data.repositories.ChatRoomRepository
@@ -43,7 +44,7 @@ interface QueryInputComponent {
      */
     data class State(
         val query: String = "",
-        val attachments: List<String> = emptyList(),
+        val attachments: List<MessageAttachment> = emptyList(),
         val isLoading: Boolean = false,
         val isEnabled: Boolean = false,
     )
@@ -162,9 +163,10 @@ internal class QueryInputComponentImpl(context: ComponentContext) :
     }
 }
 
-object QueryInputComponentPreview : QueryInputComponent {
-    override val state: StateFlow<QueryInputComponent.State> =
-        MutableStateFlow(QueryInputComponent.State())
+class QueryInputComponentPreview(
+    customState: QueryInputComponent.State = QueryInputComponent.State(isEnabled = true),
+) : QueryInputComponent {
+    override val state: StateFlow<QueryInputComponent.State> = MutableStateFlow(customState)
 
     override fun onQueryChange(query: String) = Unit
 

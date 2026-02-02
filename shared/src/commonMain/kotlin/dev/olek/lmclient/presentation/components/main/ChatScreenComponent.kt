@@ -70,7 +70,7 @@ internal class ChatScreenComponentImpl(
 data class ChatScreenComponentPreview(
     override val chatTopBarComponent: ChatTopBarComponent = ChatTopBarComponentPreview(),
     override val chatItemsListComponent: ChatItemsListComponent = ChatItemsListComponentPreview(),
-    override val queryInputComponent: QueryInputComponent = QueryInputComponentPreview,
+    override val queryInputComponent: QueryInputComponent = QueryInputComponentPreview(),
     override val state: StateFlow<ChatScreenState> = MutableStateFlow(ChatScreenState())
 ) : ChatScreenComponent {
     override fun navigateToProviderList() = Unit

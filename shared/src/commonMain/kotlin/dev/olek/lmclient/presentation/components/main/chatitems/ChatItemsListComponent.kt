@@ -183,8 +183,9 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
     }
 }
 
-data class ChatItemsListComponentPreview(private val customState: ChatItemsListState = ChatItemsListState()) :
-    ChatItemsListComponent {
+data class ChatItemsListComponentPreview(
+    private val customState: ChatItemsListState = ChatItemsListState(),
+) : ChatItemsListComponent {
     override val state: StateFlow<ChatItemsListState> = MutableStateFlow(
         customState,
     )
