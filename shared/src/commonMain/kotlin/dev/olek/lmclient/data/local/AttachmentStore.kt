@@ -4,11 +4,11 @@ import io.github.vinceglb.filekit.BookmarkData
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.bookmarkData
+import io.github.vinceglb.filekit.cacheDir
 import io.github.vinceglb.filekit.createDirectories
 import io.github.vinceglb.filekit.delete
 import io.github.vinceglb.filekit.div
 import io.github.vinceglb.filekit.exists
-import io.github.vinceglb.filekit.filesDir
 import io.github.vinceglb.filekit.fromBookmarkData
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
@@ -38,7 +38,7 @@ interface AttachmentStore {
      * @param bookmarkData Reference to the stored attachment
      * @return Base64-encoded content
      */
-    suspend fun getAttachmentContent(bookmarkData: BookmarkData): String
+    suspend fun getAttachmentContent(bookmarkData: BookmarkData): String?
 
     /**
      * Removes an attachment from storage.
@@ -51,7 +51,7 @@ interface AttachmentStore {
 internal class AttachmentStoreImpl : AttachmentStore {
     private val json = Json { ignoreUnknownKeys = true }
     private val attachmentsDir: PlatformFile by lazy {
-        (FileKit.filesDir / "attachments").also {
+        (FileKit.cacheDir / "attachments").also {
             if (!it.exists()) it.createDirectories()
         }
     }
@@ -70,10 +70,14 @@ internal class AttachmentStoreImpl : AttachmentStore {
 
     override suspend fun getAttachmentContent(
         bookmarkData: BookmarkData,
-    ): String = withContext(Dispatchers.IO) {
+    ): String? = withContext(Dispatchers.IO) {
         val file = PlatformFile.fromBookmarkData(bookmarkData)
-        val stored = json.decodeFromString<StoredAttachment>(file.readString())
-        stored.content
+        if (file.exists()) {
+            val stored = json.decodeFromString<StoredAttachment>(file.readString())
+            stored.content
+        } else {
+            null
+        }
     }
 
     override suspend fun removeAttachment(

@@ -87,6 +87,7 @@ kotlin {
             implementation(libs.settings.observable)
             implementation(libs.settings.coroutines)
             implementation(libs.filekit.core)
+            implementation(libs.filekit.compose)
             implementation(libs.koog.agents.get().toString()) {
                 // TODO remove when fixed on koog side
                 exclude(group = "io.modelcontextprotocol", module = "kotlin-sdk-core-jvm")

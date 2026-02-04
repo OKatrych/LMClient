@@ -74,7 +74,8 @@ internal class KoogMessageMapper(
                             add(ContentPart.Text(content.text))
                         }
                         message.attachments.forEach { attachment ->
-                            add(attachmentMapper.mapToKoog(attachment))
+                            val mappedAttachment = attachmentMapper.mapToKoog(attachment)
+                            if (mappedAttachment != null) add(mappedAttachment)
                         }
                     },
                     metaInfo = RequestMetaInfo.Empty,

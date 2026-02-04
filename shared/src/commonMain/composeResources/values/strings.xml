@@ -61,4 +61,8 @@
     <string name="configure_provider">Select provider</string>
 
     <string name="search_icon_desc">Search</string>
+
+    <string name="attachment_pick_image_desc">Pick image</string>
+    <string name="attachment_pick_file_desc">Attach file</string>
+    <string name="attachment_remove_desc">Remove attachment</string>
 </resources>

@@ -97,6 +97,7 @@ koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
 markdown-core = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "markdown" }
 markdown-ui = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdown" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
+filekit-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekit" }
 composeunstyled = { module = "com.composables:composeunstyled", version.ref = "composeunstyled" }
 
 [plugins]

@@ -7,6 +7,8 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class AttachmentsRepositoryTest {
@@ -80,6 +82,7 @@ class AttachmentsRepositoryTest {
 
         val result = repository.getAttachmentContent(reference)
 
+        assertNotNull(result)
         assertEquals(base64Content, result.base64)
     }
 
@@ -93,12 +96,12 @@ class AttachmentsRepositoryTest {
     }
 
     @Test
-    fun `getAttachmentContent throws when attachment not found`() = runTest {
+    fun `getAttachmentContent returns null when attachment not found`() = runTest {
         val unknownRef = AttachmentContentReference.LocalFile("unknown-key".encodeToByteArray())
 
-        assertFailsWith<NoSuchElementException> {
-            repository.getAttachmentContent(unknownRef)
-        }
+        val result = repository.getAttachmentContent(unknownRef)
+
+        assertNull(result)
     }
 
     @Test
@@ -110,6 +113,7 @@ class AttachmentsRepositoryTest {
 
         for ((index, ref) in references.withIndex()) {
             val result = repository.getAttachmentContent(ref)
+            assertNotNull(result)
             assertEquals(contents[index], result.base64)
         }
     }
@@ -156,8 +160,8 @@ class AttachmentsRepositoryTest {
 
         assertEquals(2, fakeStore.savedAttachments.size)
         // Verify other attachments are still accessible
-        assertEquals("content1", repository.getAttachmentContent(ref1).base64)
-        assertEquals("content3", repository.getAttachmentContent(ref3).base64)
+        assertEquals("content1", repository.getAttachmentContent(ref1)?.base64)
+        assertEquals("content3", repository.getAttachmentContent(ref3)?.base64)
     }
 
     // endregion
@@ -172,6 +176,7 @@ class AttachmentsRepositoryTest {
         val reference = repository.processAssistantAttachment(originalContent, mimeType)
         val retrieved = repository.getAttachmentContent(reference)
 
+        assertNotNull(retrieved)
         assertEquals(originalContent, retrieved.base64)
     }
 
@@ -182,6 +187,7 @@ class AttachmentsRepositoryTest {
         val reference = repository.processAssistantAttachment(largeContent, "text/plain")
         val retrieved = repository.getAttachmentContent(reference)
 
+        assertNotNull(retrieved)
         assertEquals(largeContent, retrieved.base64)
     }
 
@@ -193,6 +199,7 @@ class AttachmentsRepositoryTest {
         val reference = repository.processAssistantAttachment(base64WithSpecialChars, "text/plain")
         val retrieved = repository.getAttachmentContent(reference)
 
+        assertNotNull(retrieved)
         assertEquals(base64WithSpecialChars, retrieved.base64)
     }
 
@@ -219,11 +226,9 @@ private class FakeAttachmentStore : AttachmentStore {
         return BookmarkData(key.encodeToByteArray())
     }
 
-    override suspend fun getAttachmentContent(bookmarkData: BookmarkData): String {
+    override suspend fun getAttachmentContent(bookmarkData: BookmarkData): String? {
         val key = bookmarkData.bytes.decodeToString()
-        val attachment = savedAttachments[key]
-            ?: throw NoSuchElementException("Attachment not found: $key")
-        return attachment.base64
+        return savedAttachments[key]?.base64
     }
 
     override suspend fun removeAttachment(bookmarkData: BookmarkData) {

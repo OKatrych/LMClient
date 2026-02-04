@@ -2,9 +2,12 @@ package dev.olek.lmclient.data.repositories
 
 import dev.olek.lmclient.data.local.AttachmentStore
 import dev.olek.lmclient.data.models.AttachmentContentReference
+import dev.olek.lmclient.data.models.MessageAttachment
 import io.github.vinceglb.filekit.BookmarkData
 import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.extension
 import io.github.vinceglb.filekit.mimeType
+import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.readBytes
 import org.koin.core.annotation.Single
 import kotlin.io.encoding.Base64
@@ -29,11 +32,11 @@ interface AttachmentsRepository {
      * the content in disc cache for later retrieval.
      *
      * @param attachmentFile abstracted away platform-specific file.
-     * @return [AttachmentContentReference] pointing to the stored attachment.
+     * @return [MessageAttachment] stored attachment.
      */
     suspend fun processUserAttachment(
         attachmentFile: PlatformFile,
-    ): AttachmentContentReference
+    ): MessageAttachment
 
     /**
      * Processes an assistant-generated attachment for storage.
@@ -57,7 +60,7 @@ interface AttachmentsRepository {
      *                  or [processAssistantAttachment].
      * @return [AttachmentContent] containing the Base64-encoded data.
      */
-    suspend fun getAttachmentContent(reference: AttachmentContentReference): AttachmentContent
+    suspend fun getAttachmentContent(reference: AttachmentContentReference): AttachmentContent?
 
     /**
      * Deletes a stored attachment from cache.
@@ -80,11 +83,17 @@ internal class AttachmentsRepositoryImpl(
 ) : AttachmentsRepository {
     override suspend fun processUserAttachment(
         attachmentFile: PlatformFile,
-    ): AttachmentContentReference {
+    ): MessageAttachment {
         val base64 = Base64.encode(attachmentFile.readBytes())
         val mimeType = attachmentFile.mimeType().toString()
         val bookmarkData = attachmentStore.saveAttachment(base64, mimeType)
-        return AttachmentContentReference.LocalFile(pathBytes = bookmarkData.bytes)
+        val reference = AttachmentContentReference.LocalFile(pathBytes = bookmarkData.bytes)
+        return MessageAttachment(
+            content = reference,
+            format = attachmentFile.extension,
+            mimeType = attachmentFile.mimeType().toString(),
+            fileName = attachmentFile.name,
+        )
     }
 
     override suspend fun processAssistantAttachment(
@@ -97,14 +106,13 @@ internal class AttachmentsRepositoryImpl(
 
     override suspend fun getAttachmentContent(
         reference: AttachmentContentReference,
-    ): AttachmentsRepository.AttachmentContent {
+    ): AttachmentsRepository.AttachmentContent? {
         require(reference is AttachmentContentReference.LocalFile) {
             "Only local files are supported for now"
         }
-        val base64 = attachmentStore.getAttachmentContent(
+        return attachmentStore.getAttachmentContent(
             bookmarkData = BookmarkData(reference.pathBytes),
-        )
-        return AttachmentsRepository.AttachmentContent(base64)
+        )?.let(AttachmentsRepository::AttachmentContent)
     }
 
     override suspend fun deleteAttachment(

@@ -334,6 +334,21 @@ class KoogAttachmentMapperTest {
         assertNull(result.fileName)
     }
 
+    @Test
+    fun `mapToKoog returns null when local file content not found`() = runTest {
+        fakeRepository.getAttachmentContentResult = null
+        val attachment = MessageAttachment(
+            content = AttachmentContentReference.LocalFile("missing-path".encodeToByteArray()),
+            format = "png",
+            mimeType = "image/png",
+            fileName = "missing.png",
+        )
+
+        val result = mapper.mapToKoog(attachment)
+
+        assertNull(result)
+    }
+
     // endregion
 
     // region roundtrip tests
@@ -347,7 +362,7 @@ class KoogAttachmentMapperTest {
             fileName = "photo.jpg",
         )
 
-        val koogPart = mapper.mapToKoog(original)
+        val koogPart = mapper.mapToKoog(original)!!
         val restored = mapper.mapToDomain(koogPart)!!
 
         val originalRemote = original.content as AttachmentContentReference.RemoteFile
@@ -367,7 +382,7 @@ class KoogAttachmentMapperTest {
             fileName = "song.mp3",
         )
 
-        val koogPart = mapper.mapToKoog(original)
+        val koogPart = mapper.mapToKoog(original)!!
         val restored = mapper.mapToDomain(koogPart)!!
 
         val originalRemote = original.content as AttachmentContentReference.RemoteFile
@@ -387,7 +402,7 @@ class KoogAttachmentMapperTest {
             fileName = "clip.mp4",
         )
 
-        val koogPart = mapper.mapToKoog(original)
+        val koogPart = mapper.mapToKoog(original)!!
         val restored = mapper.mapToDomain(koogPart)!!
 
         val originalRemote = original.content as AttachmentContentReference.RemoteFile
@@ -407,7 +422,7 @@ class KoogAttachmentMapperTest {
             fileName = "document.pdf",
         )
 
-        val koogPart = mapper.mapToKoog(original)
+        val koogPart = mapper.mapToKoog(original)!!
         val restored = mapper.mapToDomain(koogPart)!!
 
         val originalRemote = original.content as AttachmentContentReference.RemoteFile

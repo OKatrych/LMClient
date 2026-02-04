@@ -46,8 +46,8 @@ internal class KoogAttachmentMapper(
         }
     }
 
-    suspend fun mapToKoog(attachment: MessageAttachment): ContentPart {
-        val content = attachment.content.toKoogAttachmentContent()
+    suspend fun mapToKoog(attachment: MessageAttachment): ContentPart? {
+        val content = attachment.content.toKoogAttachmentContent() ?: return null
         return when {
             attachment.mimeType.startsWith("image/") -> ContentPart.Image(
                 content = content,
@@ -100,12 +100,13 @@ internal class KoogAttachmentMapper(
         }
     }
 
-    private suspend fun AttachmentContentReference.toKoogAttachmentContent(): KoogAttachmentContent {
+    private suspend fun AttachmentContentReference.toKoogAttachmentContent()
+            : KoogAttachmentContent? {
         return when (this) {
             is AttachmentContentReference.LocalFile -> {
-                KoogAttachmentContent.Binary.Base64(
-                    base64 = attachmentsRepository.getAttachmentContent(this).base64
-                )
+                val base64 = attachmentsRepository.getAttachmentContent(this)?.base64
+                    ?: return null
+                KoogAttachmentContent.Binary.Base64(base64 = base64)
             }
 
             is AttachmentContentReference.RemoteFile -> {

@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -42,8 +43,15 @@ import dev.olek.lmclient.presentation.components.main.QueryInputComponentPreview
 import dev.olek.lmclient.presentation.theme.AppTheme
 import dev.olek.lmclient.presentation.ui.mobile.common.PreviewWrapper
 import dev.olek.lmclient.presentation.util.collectAsStateMultiplatform
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import lm_client.shared.generated.resources.Res
+import lm_client.shared.generated.resources.attachment_pick_file_desc
+import lm_client.shared.generated.resources.attachment_pick_image_desc
 import lm_client.shared.generated.resources.ic_arrow_up
+import lm_client.shared.generated.resources.ic_attachment
+import lm_client.shared.generated.resources.ic_image
 import lm_client.shared.generated.resources.ic_stop
 import lm_client.shared.generated.resources.query_input_placeholder
 import lm_client.shared.generated.resources.query_input_stop_desc
@@ -56,6 +64,22 @@ internal fun QueryInputBox(
     component: QueryInputComponent,
     modifier: Modifier = Modifier,
 ) {
+    val imagePickerLauncher = rememberFilePickerLauncher(
+        mode = FileKitMode.Multiple(),
+        type = FileKitType.Image,
+    ) { files ->
+        files?.forEach { file ->
+            component.onAddAttachment(file)
+        }
+    }
+    val filePickerLauncher = rememberFilePickerLauncher(
+        mode = FileKitMode.Multiple(),
+        type = FileKitType.File(extensions = listOf("pdf", "doc", "docx", "txt", "rtf")),
+    ) { files ->
+        files?.forEach { file ->
+            component.onAddAttachment(file)
+        }
+    }
     val state by component.state.collectAsStateMultiplatform()
 
     AnimatedVisibility(
@@ -75,8 +99,14 @@ internal fun QueryInputBox(
             content = {
                 QueryInputBoxContent(
                     query = state.query,
+                    attachments = state.attachments,
+                    canAttachImages = state.canAttachImages,
+                    canAttachDocuments = state.canAttachDocuments,
                     isLoading = state.isLoading,
                     onQueryChange = component::onQueryChange,
+                    onAddImageClick = { imagePickerLauncher.launch() },
+                    onAddFileClick = { filePickerLauncher.launch() },
+                    onRemoveAttachmentClick = component::onRemoveAttachment,
                     onSubmit = component::onQuerySubmit,
                     onCancel = component::onQueryCancel,
                 )
@@ -88,12 +118,14 @@ internal fun QueryInputBox(
 @Composable
 private fun QueryInputBoxContent(
     query: String,
-    onQueryChange: (String) -> Unit,
     attachments: List<MessageAttachment>,
-    onTakeProtoClick: () -> Unit,
-    onAddAttachmentClick: () -> Unit,
-    onRemoveAttachmentClick: () -> Unit,
+    canAttachImages: Boolean,
+    canAttachDocuments: Boolean,
     isLoading: Boolean,
+    onQueryChange: (String) -> Unit,
+    onAddImageClick: () -> Unit,
+    onAddFileClick: () -> Unit,
+    onRemoveAttachmentClick: (MessageAttachment) -> Unit,
     onSubmit: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -115,15 +147,33 @@ private fun QueryInputBoxContent(
                 .padding(horizontal = 8.dp)
                 .padding(bottom = 16.dp),
             leadingButton = {
-                // TODO this should be changed to have two buttons:
-                //  "take photo" and "attach attachment"
-                //  use ic_camera and "ic_attachment" drawables
-                //  respect clickable area 48.dp
+                Row {
+                    if (canAttachImages) {
+                        IconButton(onClick = onAddImageClick) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_image),
+                                contentDescription = stringResource(Res.string.attachment_pick_image_desc),
+                                tint = AppTheme.colors.icon,
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                    }
+                    if (canAttachDocuments) {
+                        IconButton(onClick = onAddFileClick) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_attachment),
+                                contentDescription = stringResource(Res.string.attachment_pick_file_desc),
+                                tint = AppTheme.colors.icon,
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                    }
+                }
             },
             trailingButton = {
                 RoundedAnimatedButton(
                     onClick = if (isLoading) onCancel else onSubmit,
-                    isVisible = query.isNotBlank() || isLoading,
+                    isVisible = query.isNotBlank() || attachments.isNotEmpty() || isLoading,
                     icon = {
                         if (isLoading) {
                             CancelIcon(Modifier.padding(8.dp))
@@ -273,6 +323,8 @@ private fun QueryInputBoxWithAttachmentsPreview() = PreviewWrapper {
             QueryInputComponent.State(
                 isEnabled = true,
                 query = "Tell me about me",
+                canAttachImages = true,
+                canAttachDocuments = true,
                 attachments = listOf(
                     MessageAttachment(
                         content = AttachmentContentReference
@@ -289,6 +341,20 @@ private fun QueryInputBoxWithAttachmentsPreview() = PreviewWrapper {
                         mimeType = "image/png",
                     )
                 )
+            )
+        ),
+    )
+}
+
+@Composable
+@Preview
+private fun QueryInputBoxWithCapabilitiesPreview() = PreviewWrapper {
+    QueryInputBox(
+        component = QueryInputComponentPreview(
+            QueryInputComponent.State(
+                isEnabled = true,
+                canAttachImages = true,
+                canAttachDocuments = true,
             )
         ),
     )
