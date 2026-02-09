@@ -1,8 +1,8 @@
 package dev.olek.lmclient.data.repositories
 
 import co.touchlab.kermit.Logger
-import dev.olek.lmclient.data.local.MessagesStore
-import dev.olek.lmclient.data.local.ModelProviderStore
+import dev.olek.lmclient.data.local.MessagesStoreContract
+import dev.olek.lmclient.data.local.ModelProviderStoreContract
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
@@ -81,8 +81,8 @@ interface ChatMessagesRepository {
 
 @Single(binds = [ChatMessagesRepository::class])
 internal class ChatMessagesRepositoryImpl(
-    private val messagesStore: MessagesStore,
-    private val modelProviderStore: ModelProviderStore,
+    private val messagesStore: MessagesStoreContract,
+    private val modelProviderStore: ModelProviderStoreContract,
     private val apiProvider: LMClientApiProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
 ) : ChatMessagesRepository {

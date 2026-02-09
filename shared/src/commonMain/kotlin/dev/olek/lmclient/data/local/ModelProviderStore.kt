@@ -19,11 +19,16 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
-@Single
+interface ModelProviderStoreContract {
+    fun observeModelProvider(id: String): Flow<ModelProvider>
+    suspend fun getModels(providerId: String): List<Model>
+}
+
+@Single(binds = [ModelProviderStoreContract::class])
 class ModelProviderStore(
     private val database: Database,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) {
+) : ModelProviderStoreContract {
     fun observeProviders(): Flow<List<ModelProvider>> = database.modelProvidersQueries
         .selectAllModelProviders(mapper = ::providerMapper)
         .asFlow()
@@ -31,7 +36,7 @@ class ModelProviderStore(
         .distinctUntilChanged()
         .flowOn(dispatcher)
 
-    fun observeModelProvider(id: String): Flow<ModelProvider> = database.modelProvidersQueries
+    override fun observeModelProvider(id: String): Flow<ModelProvider> = database.modelProvidersQueries
         .selectModelProvider(id = id, mapper = ::providerMapper)
         .asFlow()
         .mapToOne(dispatcher)
@@ -72,7 +77,7 @@ class ModelProviderStore(
         .distinctUntilChanged()
         .flowOn(dispatcher)
 
-    suspend fun getModels(providerId: String): List<Model> = withContext(dispatcher) {
+    override suspend fun getModels(providerId: String): List<Model> = withContext(dispatcher) {
         database.modelsQueries
             .getModels(provider_id = providerId, mapper = ::modelMapper)
             .awaitAsList()

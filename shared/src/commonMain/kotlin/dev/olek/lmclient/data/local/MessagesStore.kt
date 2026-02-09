@@ -18,14 +18,28 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 
-@Single
+internal interface MessagesStoreContract {
+    fun observeMessages(chatRoomId: String): Flow<List<Message>>
+    suspend fun insertFullMessage(chatRoomId: String, message: Message)
+    suspend fun insertStreamMessage(
+        messageId: String,
+        chatRoomId: String,
+        contentChunk: String,
+        finishReason: MessageFinishReason? = null,
+        error: LMClientError? = null,
+    )
+    suspend fun getMessage(messageId: String): Message?
+    suspend fun deleteMessageAndSubsequent(chatRoomId: String, messageId: String)
+}
+
+@Single(binds = [MessagesStoreContract::class])
 internal class MessagesStore(
     private val database: Database,
     private val messageMapper: MessageMapper,
     private val messageAttachmentMapper: MessageAttachmentMapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) {
-    fun observeMessages(chatRoomId: String): Flow<List<Message>> = database.messagesQueries
+) : MessagesStoreContract {
+    override fun observeMessages(chatRoomId: String): Flow<List<Message>> = database.messagesQueries
         .getMessages(chatRoomId)
         .asFlow()
         .mapToList(dispatcher)
@@ -41,7 +55,7 @@ internal class MessagesStore(
         .distinctUntilChanged()
         .flowOn(dispatcher)
 
-    suspend fun insertFullMessage(chatRoomId: String, message: Message) = withContext(dispatcher) {
+    override suspend fun insertFullMessage(chatRoomId: String, message: Message) = withContext(dispatcher) {
         database.transaction {
             val dbModel = messageMapper.mapToDbModel(message, chatRoomId)
 
@@ -77,13 +91,13 @@ internal class MessagesStore(
         }
     }
 
-    suspend fun insertStreamMessage(
+    override suspend fun insertStreamMessage(
         messageId: String,
         chatRoomId: String,
         contentChunk: String,
-        finishReason: MessageFinishReason? = null,
-        error: LMClientError? = null,
-    ) = withContext(dispatcher) {
+        finishReason: MessageFinishReason?,
+        error: LMClientError?,
+    ): Unit = withContext(dispatcher) {
         val (finishReasonType, finishReasonMessage) = messageMapper.getFinishReasonDbFormat(
             finishReason
         )
@@ -102,7 +116,7 @@ internal class MessagesStore(
         )
     }
 
-    suspend fun getMessage(messageId: String): Message? = withContext(dispatcher) {
+    override suspend fun getMessage(messageId: String): Message? = withContext(dispatcher) {
         database.messagesQueries
             .getMessageById(messageId)
             .executeAsOneOrNull()
@@ -115,10 +129,10 @@ internal class MessagesStore(
             }
     }
 
-    suspend fun deleteMessageAndSubsequent(
+    override suspend fun deleteMessageAndSubsequent(
         chatRoomId: String,
-        messageId: String
-    ) = withContext(dispatcher) {
+        messageId: String,
+    ): Unit = withContext(dispatcher) {
         database.messagesQueries.deleteMessageAndSubsequent(chatRoomId, messageId)
     }
 }
