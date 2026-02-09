@@ -12,8 +12,6 @@ data class Model(
     val maxOutputTokens: Long? = null,
     val isActive: Boolean = false,
 ) {
-    fun supports(capability: Capability): Boolean = capabilities.contains(capability)
-
     @Serializable
     sealed class Capability(val id: String) {
         /**
@@ -84,7 +82,9 @@ data class Model(
              * require visual comprehension.
              */
             @Serializable
-            data object Image : Vision("image")
+            data class Image(
+                val fileExtensions: List<String> = listOf("png", "jpg", "jpeg", "webp", "gif")
+            ) : Vision("image")
 
             /**
              * Represents the video processing capability within vision-based tasks.
@@ -110,7 +110,11 @@ data class Model(
          * Represents a specific language model capability associated with handling documents.
          */
         @Serializable
-        data object Document : Capability("document")
+        data class Document(
+            val fileExtensions: List<String> = listOf(
+                "pdf", "docx", "csv", "txt", "html", "odt", "rtf", "epub", "json", "xlsx",
+            )
+        ) : Capability("document")
 
         /**
          * Represents the "completion" capability for Language Learning Models (LLMs). This

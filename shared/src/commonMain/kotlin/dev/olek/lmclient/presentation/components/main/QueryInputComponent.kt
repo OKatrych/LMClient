@@ -48,19 +48,27 @@ interface QueryInputComponent {
     /**
      * @param isEnabled whether component is shown.
      * @param query the query text.
-     * @param attachments the list of attachments.
      * @param isLoading whether the system message is being generated.
-     * @param canAttachImages whether the current model supports image attachments.
-     * @param canAttachDocuments whether the current model supports document attachments.
      */
     data class State(
         val isEnabled: Boolean = false,
         val query: String = "",
-        val attachments: List<MessageAttachment> = emptyList(),
+        val attachmentsState: AttachmentsState = AttachmentsState(),
         val isLoading: Boolean = false,
-        val canAttachImages: Boolean = false,
-        val canAttachDocuments: Boolean = false,
-    )
+    ) {
+        /**
+         * @param attachments the list of attachments.
+         * @param canAttachImages whether the current model supports image attachments.
+         * @param canAttachDocuments whether the current model supports document attachments.
+         * @param supportedExtensions full list of supported model attachment extensions.
+         */
+        data class AttachmentsState(
+            val attachments: List<MessageAttachment> = emptyList(),
+            val canAttachImages: Boolean = false,
+            val canAttachDocuments: Boolean = false,
+            val supportedExtensions: List<String> = emptyList(),
+        )
+    }
 }
 
 internal class QueryInputComponentImpl(
@@ -120,16 +128,27 @@ internal class QueryInputComponentImpl(
     ) { query, attachments, activeProvider, activeModel, isMessageGenerating, activeChatRoom ->
         val hasSameProvider =
             activeChatRoom == null || activeProvider?.id == activeChatRoom.modelProviderId
-        val canAttachImages = activeModel?.supports(Model.Capability.Vision.Image) == true
-        val canAttachDocuments = activeModel?.supports(Model.Capability.Document) == true
+        val imageCapability = activeModel?.capabilities
+            ?.filterIsInstance<Model.Capability.Vision.Image>()
+            ?.firstOrNull()
+        val documentCapability = activeModel?.capabilities
+            ?.filterIsInstance<Model.Capability.Document>()
+            ?.firstOrNull()
+        val extensions = buildList {
+            imageCapability?.let { addAll(it.fileExtensions) }
+            documentCapability?.let { addAll(it.fileExtensions) }
+        }
 
         QueryInputComponent.State(
             query = query,
-            attachments = attachments,
+            attachmentsState = QueryInputComponent.State.AttachmentsState(
+                attachments = attachments,
+                canAttachImages = imageCapability != null,
+                canAttachDocuments = documentCapability != null,
+                supportedExtensions = extensions,
+            ),
             isLoading = isMessageGenerating,
             isEnabled = activeProvider != null && activeModel != null && hasSameProvider,
-            canAttachImages = canAttachImages,
-            canAttachDocuments = canAttachDocuments,
         )
     }.stateIn(
         scope = coroutineScope,
@@ -147,7 +166,7 @@ internal class QueryInputComponentImpl(
             val currentState = state.value
             val userMessage = Message.UserMessage(
                 content = MessageContent.Text(currentState.query),
-                attachments = currentState.attachments,
+                attachments = currentState.attachmentsState.attachments,
             )
             val chatRoom = getOrCreateChatRoom(userMessage)
 

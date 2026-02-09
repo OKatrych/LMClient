@@ -29,10 +29,8 @@ import dev.olek.lmclient.data.repositories.AttachmentsRepository
 import dev.olek.lmclient.presentation.theme.AppTheme
 import lm_client.shared.generated.resources.Res
 import lm_client.shared.generated.resources.attachment_remove_desc
-import lm_client.shared.generated.resources.ic_audio
+import lm_client.shared.generated.resources.ic_attachment
 import lm_client.shared.generated.resources.ic_close
-import lm_client.shared.generated.resources.ic_document
-import lm_client.shared.generated.resources.ic_image
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -97,7 +95,7 @@ private fun ImageAttachmentChip(
                 contentScale = ContentScale.Crop,
             )
         } ?: Icon(
-            painter = painterResource(Res.drawable.ic_image),
+            painter = painterResource(Res.drawable.ic_attachment),
             contentDescription = null,
             tint = AppTheme.colors.icon,
             modifier = Modifier.size(24.dp),
@@ -111,9 +109,7 @@ private fun FileAttachmentChip(
     modifier: Modifier = Modifier,
 ) {
     val icon = when {
-        attachment.mimeType.startsWith("audio/") -> Res.drawable.ic_audio
-        attachment.mimeType.startsWith("video/") -> Res.drawable.ic_image
-        else -> Res.drawable.ic_document
+        else -> Res.drawable.ic_attachment
     }
 
     Row(

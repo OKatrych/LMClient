@@ -39,10 +39,12 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.olek.lmclient.data.models.AttachmentContentReference
 import dev.olek.lmclient.data.models.MessageAttachment
 import dev.olek.lmclient.presentation.components.main.QueryInputComponent
+import dev.olek.lmclient.presentation.components.main.QueryInputComponent.State.AttachmentsState
 import dev.olek.lmclient.presentation.components.main.QueryInputComponentPreview
 import dev.olek.lmclient.presentation.theme.AppTheme
 import dev.olek.lmclient.presentation.ui.mobile.common.PreviewWrapper
 import dev.olek.lmclient.presentation.util.collectAsStateMultiplatform
+import dev.olek.lmclient.presentation.util.rememberCameraPickerLauncher
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
@@ -51,7 +53,7 @@ import lm_client.shared.generated.resources.attachment_pick_file_desc
 import lm_client.shared.generated.resources.attachment_pick_image_desc
 import lm_client.shared.generated.resources.ic_arrow_up
 import lm_client.shared.generated.resources.ic_attachment
-import lm_client.shared.generated.resources.ic_image
+import lm_client.shared.generated.resources.ic_camera
 import lm_client.shared.generated.resources.ic_stop
 import lm_client.shared.generated.resources.query_input_placeholder
 import lm_client.shared.generated.resources.query_input_stop_desc
@@ -64,23 +66,16 @@ internal fun QueryInputBox(
     component: QueryInputComponent,
     modifier: Modifier = Modifier,
 ) {
-    val imagePickerLauncher = rememberFilePickerLauncher(
-        mode = FileKitMode.Multiple(),
-        type = FileKitType.Image,
-    ) { files ->
-        files?.forEach { file ->
-            component.onAddAttachment(file)
-        }
+    val state by component.state.collectAsStateMultiplatform()
+    val cameraPickerLauncher = rememberCameraPickerLauncher { file ->
+        file?.let(component::onAddAttachment)
     }
     val filePickerLauncher = rememberFilePickerLauncher(
         mode = FileKitMode.Multiple(),
-        type = FileKitType.File(extensions = listOf("pdf", "doc", "docx", "txt", "rtf")),
+        type = FileKitType.File(extensions = state.attachmentsState.supportedExtensions),
     ) { files ->
-        files?.forEach { file ->
-            component.onAddAttachment(file)
-        }
+        files?.forEach(component::onAddAttachment)
     }
-    val state by component.state.collectAsStateMultiplatform()
 
     AnimatedVisibility(
         visible = state.isEnabled,
@@ -99,12 +94,10 @@ internal fun QueryInputBox(
             content = {
                 QueryInputBoxContent(
                     query = state.query,
-                    attachments = state.attachments,
-                    canAttachImages = state.canAttachImages,
-                    canAttachDocuments = state.canAttachDocuments,
+                    attachmentsState = state.attachmentsState,
                     isLoading = state.isLoading,
                     onQueryChange = component::onQueryChange,
-                    onAddImageClick = { imagePickerLauncher.launch() },
+                    onAddPhotoClick = { cameraPickerLauncher?.launch() },
                     onAddFileClick = { filePickerLauncher.launch() },
                     onRemoveAttachmentClick = component::onRemoveAttachment,
                     onSubmit = component::onQuerySubmit,
@@ -118,12 +111,10 @@ internal fun QueryInputBox(
 @Composable
 private fun QueryInputBoxContent(
     query: String,
-    attachments: List<MessageAttachment>,
-    canAttachImages: Boolean,
-    canAttachDocuments: Boolean,
+    attachmentsState: AttachmentsState,
     isLoading: Boolean,
     onQueryChange: (String) -> Unit,
-    onAddImageClick: () -> Unit,
+    onAddPhotoClick: () -> Unit,
     onAddFileClick: () -> Unit,
     onRemoveAttachmentClick: (MessageAttachment) -> Unit,
     onSubmit: () -> Unit,
@@ -131,7 +122,7 @@ private fun QueryInputBoxContent(
 ) {
     Column {
         AttachmentsRow(
-            attachments = attachments,
+            attachments = attachmentsState.attachments,
             onRemoveAttachmentClick = onRemoveAttachmentClick,
         )
         InputField(
@@ -148,17 +139,17 @@ private fun QueryInputBoxContent(
                 .padding(bottom = 16.dp),
             leadingButton = {
                 Row {
-                    if (canAttachImages) {
-                        IconButton(onClick = onAddImageClick) {
+                    if (attachmentsState.canAttachImages) {
+                        IconButton(onClick = onAddPhotoClick) {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_image),
+                                painter = painterResource(Res.drawable.ic_camera),
                                 contentDescription = stringResource(Res.string.attachment_pick_image_desc),
                                 tint = AppTheme.colors.icon,
                                 modifier = Modifier.size(24.dp),
                             )
                         }
                     }
-                    if (canAttachDocuments) {
+                    if (attachmentsState.canAttachDocuments) {
                         IconButton(onClick = onAddFileClick) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_attachment),
@@ -173,7 +164,8 @@ private fun QueryInputBoxContent(
             trailingButton = {
                 RoundedAnimatedButton(
                     onClick = if (isLoading) onCancel else onSubmit,
-                    isVisible = query.isNotBlank() || attachments.isNotEmpty() || isLoading,
+                    isVisible = query.isNotBlank() ||
+                            isLoading || attachmentsState.attachments.isNotEmpty(),
                     icon = {
                         if (isLoading) {
                             CancelIcon(Modifier.padding(8.dp))
@@ -323,24 +315,26 @@ private fun QueryInputBoxWithAttachmentsPreview() = PreviewWrapper {
             QueryInputComponent.State(
                 isEnabled = true,
                 query = "Tell me about me",
-                canAttachImages = true,
-                canAttachDocuments = true,
-                attachments = listOf(
-                    MessageAttachment(
-                        content = AttachmentContentReference
-                            .LocalFile("test/path".encodeToByteArray()),
-                        format = "pdf",
-                        fileName = "file",
-                        mimeType = "application/pdf",
-                    ),
-                    MessageAttachment(
-                        content = AttachmentContentReference
-                            .LocalFile("test/path".encodeToByteArray()),
-                        format = "png",
-                        fileName = "image",
-                        mimeType = "image/png",
+                attachmentsState = AttachmentsState(
+                    canAttachImages = true,
+                    canAttachDocuments = true,
+                    attachments = listOf(
+                        MessageAttachment(
+                            content = AttachmentContentReference
+                                .LocalFile("test/path".encodeToByteArray()),
+                            format = "pdf",
+                            fileName = "file",
+                            mimeType = "application/pdf",
+                        ),
+                        MessageAttachment(
+                            content = AttachmentContentReference
+                                .LocalFile("test/path".encodeToByteArray()),
+                            format = "png",
+                            fileName = "image",
+                            mimeType = "image/png",
+                        )
                     )
-                )
+                ),
             )
         ),
     )
@@ -353,8 +347,10 @@ private fun QueryInputBoxWithCapabilitiesPreview() = PreviewWrapper {
         component = QueryInputComponentPreview(
             QueryInputComponent.State(
                 isEnabled = true,
-                canAttachImages = true,
-                canAttachDocuments = true,
+                attachmentsState = AttachmentsState(
+                    canAttachImages = true,
+                    canAttachDocuments = true,
+                ),
             )
         ),
     )

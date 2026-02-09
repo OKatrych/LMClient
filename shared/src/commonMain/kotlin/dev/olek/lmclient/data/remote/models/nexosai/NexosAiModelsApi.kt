@@ -90,7 +90,7 @@ private enum class NexosModels(
         id = "5dd11d25-a38c-4def-b7d1-8ca9c9bbc190",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -100,7 +100,7 @@ private enum class NexosModels(
         id = "c6b30b82-4372-4c89-84c7-3cc590dafae1",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -110,7 +110,7 @@ private enum class NexosModels(
         id = "8ef67c2a-5f50-4b19-acfe-5c2e404dbc95",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 128_000,
@@ -120,8 +120,8 @@ private enum class NexosModels(
         id = "af796b88-7f2a-4252-b190-69fbdc7c849f",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Vision.Video,
-            Model.Capability.Audio, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Vision.Video,
+            Model.Capability.Audio, Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 1_048_576,
@@ -131,8 +131,8 @@ private enum class NexosModels(
         id = "71127b75-8633-42e7-8a30-202c118b7d84",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Vision.Video,
-            Model.Capability.Audio, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Vision.Video,
+            Model.Capability.Audio, Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 1_048_576,
@@ -142,7 +142,7 @@ private enum class NexosModels(
         id = "c4470a36-26a8-433f-a546-8616f0bb05d3",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -161,7 +161,7 @@ private enum class NexosModels(
         id = "ece75f80-ee58-42dd-a47e-e11998c919d6",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 128_000,
@@ -171,8 +171,8 @@ private enum class NexosModels(
         id = "ce85ef82-fc66-4f34-815b-6c86b3a3202c",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Vision.Video,
-            Model.Capability.Audio, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Vision.Video,
+            Model.Capability.Audio, Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 1_048_576,
@@ -182,7 +182,7 @@ private enum class NexosModels(
         id = "8d5bc408-6aa5-41a6-88b7-331189b83b22",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 128_000,
@@ -192,7 +192,7 @@ private enum class NexosModels(
         id = "ef1b894d-fb44-42fb-9bb2-2ea810c84545",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -202,7 +202,7 @@ private enum class NexosModels(
         id = "50a38df1-ec05-415e-b799-001e3be88418",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -212,8 +212,8 @@ private enum class NexosModels(
         id = "8b77459d-7cc0-4bcd-a671-34648dd4aec6",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Vision.Video,
-            Model.Capability.Audio, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Vision.Video,
+            Model.Capability.Audio, Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 1_048_576,
@@ -223,7 +223,7 @@ private enum class NexosModels(
         id = "7071fb76-722a-41ad-8477-68123b04b4ab",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 1_000_000,
@@ -233,7 +233,7 @@ private enum class NexosModels(
         id = "a1b8d261-5c63-4329-80b4-beff81792858",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 128_000,
@@ -243,7 +243,7 @@ private enum class NexosModels(
         id = "719a4ff7-20b4-412b-8bca-9999175b5773",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -271,7 +271,7 @@ private enum class NexosModels(
         id = "75975321-03c8-44b9-9ac3-e1c130aa1924",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 400_000,
@@ -281,7 +281,7 @@ private enum class NexosModels(
         id = "11a9b888-7466-47d1-859b-b37f799e6ad2",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 400_000,
@@ -291,7 +291,7 @@ private enum class NexosModels(
         id = "b9230911-eb05-4574-b574-fdf33630070c",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 400_000,
@@ -301,7 +301,7 @@ private enum class NexosModels(
         id = "c8518efb-fc4b-4197-8a1d-02e671ffe63c",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 131_072,
@@ -311,7 +311,7 @@ private enum class NexosModels(
         id = "b5a8c14e-b6ce-4c02-b9db-f47d639c7731",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 128_000,
@@ -339,7 +339,7 @@ private enum class NexosModels(
         id = "a4b49105-2062-4c50-96e3-5f85c11a023a",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -349,7 +349,7 @@ private enum class NexosModels(
         id = "07722829-d94b-41a4-88d8-9d90486a0f26",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
         ),
         contextLength = 128_000,
         maxOutputTokens = 16_384,
@@ -358,7 +358,7 @@ private enum class NexosModels(
         id = "209b1235-5670-461f-b157-e2fabe0212ec",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -368,8 +368,8 @@ private enum class NexosModels(
         id = "afb78182-2bac-48f0-a45b-700eab7557e9",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Vision.Video,
-            Model.Capability.Audio, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Vision.Video,
+            Model.Capability.Audio, Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 1_000_000,
@@ -379,7 +379,7 @@ private enum class NexosModels(
         id = "fad52b2d-2719-4b86-808b-30641f5f1a52",
         capabilities = listOf(
             Model.Capability.Temperature, Model.Capability.Completion,
-            Model.Capability.Vision.Image, Model.Capability.Document,
+            Model.Capability.Vision.Image(), Model.Capability.Document(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 200_000,
@@ -389,7 +389,7 @@ private enum class NexosModels(
         id = "533b43f7-382c-451e-a0f1-e3c6b5f71d3c",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 400_000,
@@ -399,7 +399,7 @@ private enum class NexosModels(
         id = "9329f7d4-1f8f-496b-b9f1-385326488781",
         capabilities = listOf(
             Model.Capability.Completion,
-            Model.Capability.Vision.Image,
+            Model.Capability.Vision.Image(),
             Model.Capability.Tools, Model.Capability.ToolChoice,
         ),
         contextLength = 128_000,
@@ -455,7 +455,7 @@ private enum class NexosModels(
     ),
     GPT_IMAGE_1(
         id = "ab9fcd26-94ab-451d-95dd-fdb51bb232eb",
-        capabilities = listOf(Model.Capability.Completion, Model.Capability.Vision.Image),
+        capabilities = listOf(Model.Capability.Completion, Model.Capability.Vision.Image()),
         contextLength = 0,
         maxOutputTokens = 0,
     ),
