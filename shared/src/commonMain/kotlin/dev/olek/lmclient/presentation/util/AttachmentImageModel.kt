@@ -2,6 +2,7 @@ package dev.olek.lmclient.presentation.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.platform.LocalInspectionMode
 import dev.olek.lmclient.data.models.AttachmentContentReference
 import dev.olek.lmclient.data.repositories.AttachmentsRepository
 import org.koin.compose.koinInject
@@ -13,6 +14,8 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 fun rememberAttachmentImageModel(
     content: AttachmentContentReference,
 ): Any? {
+    if (LocalInspectionMode.current) return null
+
     val repository = koinInject<AttachmentsRepository>()
     return produceState<Any?>(initialValue = null, content) {
         value = when (content) {

@@ -189,6 +189,10 @@ internal class QueryInputComponentImpl(
     override fun onAddAttachment(file: PlatformFile) {
         coroutineScope.launch {
             logger.d { "onAddAttachment: ${file.name}" }
+            if (attachmentsState.value.any { it.fileName == file.name }) {
+                logger.d { "Attachment already exists, skipping: ${file.name}" }
+                return@launch
+            }
             val attachment = attachmentsRepository.processUserAttachment(file)
             attachmentsState.update { it + attachment }
         }

@@ -122,6 +122,7 @@ private fun QueryInputBoxContent(
 ) {
     Column {
         AttachmentsRow(
+            modifier = Modifier.padding(top = 16.dp),
             attachments = attachmentsState.attachments,
             onRemoveAttachmentClick = onRemoveAttachmentClick,
         )
@@ -136,7 +137,7 @@ private fun QueryInputBoxContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
-                .padding(bottom = 16.dp),
+                .padding(bottom = 8.dp),
             leadingButton = {
                 Row {
                     if (attachmentsState.canAttachImages) {
