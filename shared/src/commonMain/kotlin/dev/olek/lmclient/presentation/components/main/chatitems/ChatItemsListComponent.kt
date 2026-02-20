@@ -140,6 +140,7 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
                                 content = ChatItem.ChatItemContent.MarkdownContent(
                                     markdownState = parsingResult,
                                 ),
+                                attachments = attachments,
                                 finishReason = finishReason,
                                 error = error,
                             )
@@ -153,6 +154,7 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
                                 content = ChatItem.ChatItemContent.TextContent(
                                     text = content.text,
                                 ),
+                                attachments = attachments,
                                 finishReason = finishReason,
                                 error = error,
                             )
@@ -174,6 +176,7 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
                         content = ChatItem.ChatItemContent.TextContent(
                             text = content.text,
                         ),
+                        attachments = attachments,
                     )
                 }
 

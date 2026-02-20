@@ -135,7 +135,6 @@ internal fun LazyListScope.assistantChatItem(
         }
 
         is ChatItemContent.AudioContent -> TODO("Not yet supported")
-        is ChatItemContent.ImageContent -> TODO("Not yet supported")
     }
 }
 
