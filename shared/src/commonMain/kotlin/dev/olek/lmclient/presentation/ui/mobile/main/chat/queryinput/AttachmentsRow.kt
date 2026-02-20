@@ -25,6 +25,7 @@ fun AttachmentsRow(
     LookaheadScope {
         Box(modifier = Modifier.animateBounds(this)) {
             if (attachments.isNotEmpty()) {
+                @Suppress("ModifierNotUsedAtRoot")
                 LazyRow(
                     modifier = modifier,
                     contentPadding = PaddingValues(horizontal = 16.dp),

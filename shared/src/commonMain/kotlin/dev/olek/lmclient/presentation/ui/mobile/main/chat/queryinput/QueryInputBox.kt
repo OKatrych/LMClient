@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalHazeMaterialsApi::class)
-
 package dev.olek.lmclient.presentation.ui.mobile.main.chat.queryinput
 
 import androidx.compose.animation.AnimatedVisibility
@@ -35,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.olek.lmclient.data.models.AttachmentContentReference
 import dev.olek.lmclient.data.models.MessageAttachment
 import dev.olek.lmclient.presentation.components.main.QueryInputComponent

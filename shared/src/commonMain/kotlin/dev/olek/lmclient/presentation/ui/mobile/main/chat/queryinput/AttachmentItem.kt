@@ -41,12 +41,10 @@ internal fun AttachmentItem(
     Box(modifier = modifier) {
         if (isImage) {
             ImageAttachmentItem(
-                modifier = modifier,
                 attachment = attachment,
             )
         } else {
             FileAttachmentItem(
-                modifier = modifier,
                 attachment = attachment,
             )
         }
