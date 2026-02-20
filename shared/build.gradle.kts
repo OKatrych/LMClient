@@ -28,7 +28,6 @@ kotlin {
 
     jvm()
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach {
@@ -87,6 +86,8 @@ kotlin {
             implementation(libs.settings)
             implementation(libs.settings.observable)
             implementation(libs.settings.coroutines)
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.compose)
             implementation(libs.koog.agents.get().toString()) {
                 // TODO remove when fixed on koog side
                 exclude(group = "io.modelcontextprotocol", module = "kotlin-sdk-core-jvm")
@@ -154,7 +155,6 @@ dependencies {
     // https://insert-koin.io/docs/setup/annotations
     add("kspCommonMainMetadata", libs.koin.ksp.compiler)
     add("kspAndroid", libs.koin.ksp.compiler)
-    add("kspIosX64", libs.koin.ksp.compiler)
     add("kspIosArm64", libs.koin.ksp.compiler)
     add("kspIosSimulatorArm64", libs.koin.ksp.compiler)
 }

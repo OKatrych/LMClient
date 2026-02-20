@@ -30,9 +30,6 @@ sealed class LMClientModelProvider(val id: String, val display: String) {
     @Serializable
     data object NexosAI : LMClientModelProvider("nexos_ai", "Nexos.ai")
 
-    @Serializable
-    data object GithubCopilot : LMClientModelProvider("github_copilot", "Github Copilot")
-
     companion object {
         fun fromId(id: String): LMClientModelProvider = when (id) {
             Google.id -> Google
@@ -42,7 +39,6 @@ sealed class LMClientModelProvider(val id: String, val display: String) {
             Ollama.id -> Ollama
             DeepSeek.id -> DeepSeek
             NexosAI.id -> NexosAI
-            GithubCopilot.id -> GithubCopilot
             else -> error("Unsupported model provider: $id")
         }
     }

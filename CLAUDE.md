@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Kotlin Multiplatform Compose application called "LM Client" - a cross-platform chat interface for language models. The app supports Android, iOS, and Desktop (JVM) platforms with a shared UI layer built on Compose Multiplatform.
 
-The application provides a unified interface for interacting with multiple AI providers including OpenAI, Google, Anthropic, OpenRouter, Ollama, DeepSeek, GitHub Copilot, and Nexos AI, with support for both streaming and non-streaming conversations.
+The application provides a unified interface for interacting with multiple AI providers including OpenAI, Google, Anthropic, OpenRouter, Ollama, DeepSeek, and Nexos AI, with support for both streaming and non-streaming conversations.
 
 ## Project Structure
 
@@ -77,7 +77,6 @@ LM-Client/
   - OpenRouter (`openrouter`)
   - Ollama (`ollama`)
   - DeepSeek (`deepseek`)
-  - GitHub Copilot (`github_copilot`)
   - Nexos AI (`nexos_ai`)
 - **Database Stores**: SQLDelight tables for Messages, ChatRooms, ModelProviders, Models, ModelProviderConfigs, and MessageAttachments
 - **Message Features**: Support for streaming responses, message copying, rich markdown rendering, and file attachments
@@ -163,7 +162,7 @@ Platform-specific implementations in `shared/src/{androidMain,iosMain,jvmMain}/`
 - **Error Mapping**: Koog exceptions are mapped to `LMClientError` types for consistency
 - **Model Mapping**: Provider-specific model ID conversion for Koog framework integration
 - **Enhanced Features**: Foundation for agent memory, structured data processing, and advanced AI capabilities
-- **Custom Providers**: Support for non-standard providers like NexosAI and GitHub Copilot through dedicated implementations
+- **Custom Providers**: Support for non-standard providers like NexosAI through dedicated implementations
 - **Streaming Support**: Integration with Koog's streaming capabilities using `Flow<MessageStreamResult>`
 
 ### Recent Features

@@ -110,7 +110,7 @@ private fun AppearanceButton(
         Text(
             modifier = Modifier.semantics { hideFromAccessibility() },
             text = title,
-            style = AppTheme.typography.body,
+            style = AppTheme.typography.caption,
             color = AppTheme.colors.text,
         )
     }

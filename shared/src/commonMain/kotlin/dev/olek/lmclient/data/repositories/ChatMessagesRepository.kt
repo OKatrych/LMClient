@@ -1,11 +1,12 @@
 package dev.olek.lmclient.data.repositories
 
 import co.touchlab.kermit.Logger
-import dev.olek.lmclient.data.database.MessagesStore
-import dev.olek.lmclient.data.database.ModelProviderStore
+import dev.olek.lmclient.data.local.MessagesStoreContract
+import dev.olek.lmclient.data.local.ModelProviderStoreContract
 import dev.olek.lmclient.data.models.ChatRoom
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageContent
 import dev.olek.lmclient.data.models.Model
 import dev.olek.lmclient.data.models.ModelProvider
 import dev.olek.lmclient.data.remote.LMClientApiProvider
@@ -80,8 +81,8 @@ interface ChatMessagesRepository {
 
 @Single(binds = [ChatMessagesRepository::class])
 internal class ChatMessagesRepositoryImpl(
-    private val messagesStore: MessagesStore,
-    private val modelProviderStore: ModelProviderStore,
+    private val messagesStore: MessagesStoreContract,
+    private val modelProviderStore: ModelProviderStoreContract,
     private val apiProvider: LMClientApiProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
 ) : ChatMessagesRepository {
@@ -126,7 +127,7 @@ internal class ChatMessagesRepositoryImpl(
                     .observeModelProvider(chatRoom.modelProviderId)
                     .first()
 
-                if (prompt.content is Message.MessageContent.Text) {
+                if (prompt.content is MessageContent.Text) {
                     pushStreamMessage(chatHistory + prompt, chatRoom, modelProvider, model)
                 } else {
                     pushRegularMessage(chatHistory + prompt, chatRoom, modelProvider, model)

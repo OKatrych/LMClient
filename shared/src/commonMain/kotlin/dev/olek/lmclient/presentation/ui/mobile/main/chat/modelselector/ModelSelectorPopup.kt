@@ -123,7 +123,7 @@ private fun ModelItem(
         Text(
             modifier = Modifier.weight(1f),
             text = model.name,
-            style = AppTheme.typography.bodyLarge,
+            style = AppTheme.typography.body,
             color = AppTheme.colors.text,
         )
         if (selected) {

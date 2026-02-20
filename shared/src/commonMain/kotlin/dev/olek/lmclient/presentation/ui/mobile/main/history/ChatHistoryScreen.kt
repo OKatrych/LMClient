@@ -118,7 +118,7 @@ private fun HistoryList(
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
                 text = stringResource(Res.string.conversation_history_empty),
-                style = AppTheme.typography.bodyLarge,
+                style = AppTheme.typography.body,
                 color = AppTheme.colors.text,
             )
         }
@@ -153,7 +153,7 @@ private fun HistoryItem(
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
             text = chatRoom.name,
-            style = AppTheme.typography.bodyLargeMedium,
+            style = AppTheme.typography.bodyMedium,
             color = AppTheme.colors.text,
         )
     }

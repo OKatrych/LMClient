@@ -34,6 +34,7 @@ import dev.olek.lmclient.presentation.ui.mobile.common.ScreenPreview
 import dev.olek.lmclient.presentation.ui.mobile.common.ScreenPreviewWrapper
 import dev.olek.lmclient.presentation.ui.mobile.common.lazyListHazeEffect
 import dev.olek.lmclient.presentation.ui.mobile.main.chat.messages.ChatItemsList
+import dev.olek.lmclient.presentation.ui.mobile.main.chat.queryinput.QueryInputBox
 import dev.olek.lmclient.presentation.util.collectAsStateMultiplatform
 import dev.olek.lmclient.presentation.util.plus
 import lm_client.shared.generated.resources.Res

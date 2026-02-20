@@ -22,21 +22,30 @@ internal class CustomKoogAnthropicClient(
     apiKey,
     settings.withCustomVersionsMap(customVersionsMap),
 ) {
-    override suspend fun execute(prompt: Prompt, model: LLModel, tools: List<ToolDescriptor>): List<Message.Response> {
+    override suspend fun execute(
+        prompt: Prompt,
+        model: LLModel,
+        tools: List<ToolDescriptor>
+    ): List<Message.Response> {
         customVersionsMap[model] = model.id
         return super.execute(prompt, model, tools)
     }
 
-    override fun executeStreaming(prompt: Prompt, model: LLModel, tools: List<ToolDescriptor>): Flow<StreamFrame> {
+    override fun executeStreaming(
+        prompt: Prompt,
+        model: LLModel,
+        tools: List<ToolDescriptor>
+    ): Flow<StreamFrame> {
         customVersionsMap[model] = model.id
         return super.executeStreaming(prompt, model, tools)
     }
 }
 
-private fun AnthropicClientSettings.withCustomVersionsMap(map: Map<LLModel, String>): AnthropicClientSettings =
-    AnthropicClientSettings(
-        modelVersionsMap = map,
-        baseUrl = baseUrl,
-        apiVersion = apiVersion,
-        timeoutConfig = timeoutConfig,
-    )
+private fun AnthropicClientSettings.withCustomVersionsMap(
+    map: Map<LLModel, String>,
+) = AnthropicClientSettings(
+    modelVersionsMap = map,
+    baseUrl = baseUrl,
+    apiVersion = apiVersion,
+    timeoutConfig = timeoutConfig,
+)

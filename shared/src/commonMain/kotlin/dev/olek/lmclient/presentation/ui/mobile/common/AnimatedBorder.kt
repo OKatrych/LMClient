@@ -72,12 +72,11 @@ fun Modifier.animatedBorder(
     }
 
     // Select current brush based on animation progress
-    val currentBrushIndex = (animationProgress * (gradientBrushes.size - 1)).toInt()
-    val currentBrush = gradientBrushes[currentBrushIndex]
+    val currentBrushIndex: () -> Int = { (animationProgress * (gradientBrushes.size - 1)).toInt() }
 
     this
         .dropShadow(shape = shape) {
-            brush = currentBrush
+            brush = gradientBrushes[currentBrushIndex()]
             radius = shadowRadiusPx
         }.drawBehind {
             val outline = shape.createOutline(size, layoutDirection, this)
@@ -91,7 +90,7 @@ fun Modifier.animatedBorder(
             // Draw animated border
             drawOutline(
                 outline = outline,
-                brush = currentBrush,
+                brush = gradientBrushes[currentBrushIndex()],
                 style = Stroke(width = borderWidth.toPx()),
             )
         }

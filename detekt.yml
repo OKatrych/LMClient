@@ -10,7 +10,7 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
-    ignoreAnnotatedFunctions: [ ]
+    ignoreAnnotatedFunctions: ['Preview']
   LongMethod:
     active: true
     ignoreAnnotated: ['Composable']

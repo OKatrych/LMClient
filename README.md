@@ -17,6 +17,7 @@ This is a personal side project I work on in my free time to learn new technolog
 - **Cross-Platform** - Native apps for Android, iOS, and Desktop from a single codebase
 - **Multiple AI Providers** - OpenAI, Google, Anthropic, Nexos AI
 - **Streaming Responses** - Real-time streaming chat with markdown rendering
+- **File attachments** - Image and document attachments support
 - **Local Storage** - Offline message history and settings persistence
 - **Modern Stack** - Compose Multiplatform, Decompose, SQLDelight, Ktor, Koin, Arrow-kt
 
@@ -28,8 +29,8 @@ This is a personal side project I work on in my free time to learn new technolog
 
 ## In progress
 
-1. [ ] Support for OpenRouter, Ollama, DeepSeek, GitHub Copilot providers
-2. [ ] Image attachments (input/output)
+1. [ ] Support for OpenRouter, Ollama, DeepSeek, providers
+2. [ ] Image attachments (output)
 3. [ ] Audio attachments (input/output)
 4. [ ] File attachments (output)
 5. [ ] Separate Desktop design

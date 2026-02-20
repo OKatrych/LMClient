@@ -10,12 +10,6 @@ import ai.koog.prompt.executor.clients.openrouter.OpenRouterLLMClient
 import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.executor.ollama.client.OllamaClient
-import com.aallam.openai.api.http.Timeout
-import com.aallam.openai.api.logging.LogLevel
-import com.aallam.openai.client.LoggingConfig
-import com.aallam.openai.client.OpenAI
-import com.aallam.openai.client.OpenAIHost
-import com.aallam.openai.client.RetryStrategy
 import dev.olek.lmclient.app.KoinApp
 import dev.olek.lmclient.data.models.ModelProvider
 import dev.olek.lmclient.data.models.ModelProvider.ModelProviderConfig
@@ -24,19 +18,16 @@ import dev.olek.lmclient.data.remote.mappers.KoogStreamFrameMapper
 import dev.olek.lmclient.data.remote.mappers.toKoogProvider
 import dev.olek.lmclient.data.remote.messages.PromptApi
 import dev.olek.lmclient.data.remote.messages.anthropic.CustomKoogAnthropicClient
+import dev.olek.lmclient.data.remote.messages.koog.KoogPromptApi
 import dev.olek.lmclient.data.remote.models.ModelsApi
-import dev.olek.lmclient.data.remote.models.anthropic.ClaudeModelsApi
 import dev.olek.lmclient.data.remote.models.koog.KoogModelsApi
 import dev.olek.lmclient.data.remote.models.nexosai.NexosAiModelsApi
-import dev.olek.lmclient.data.remote.models.openai.OpenAiModelsApi
-import dev.olek.lmclient.data.remote.utils.claudeHttpClient
 import dev.olek.lmclient.data.remote.utils.nexosAiHttpClient
 import dev.olek.lmclient.data.util.LMClientModelProvider
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Property
 import org.koin.core.annotation.Single
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Provider for creating and caching [LMClientApi] instances based on different [ModelProvider] configurations.
@@ -113,21 +104,24 @@ internal class LMClientApiProviderImpl(
         }
     }
 
-    private fun createApi(modelProvider: ModelProvider): LMClientApi = KoogApi(
-        promptExecutor = createPromptExecutor(modelProvider),
-        modelsApi = createModelsApi(modelProvider),
-        messageMapper = messageMapper,
-        streamFrameMapper = streamFrameMapper,
-    )
+    private fun createApi(modelProvider: ModelProvider): LMClientApi {
+        val promptExecutor = createPromptExecutor(modelProvider)
+        return KoogApi(
+            promptApi = KoogPromptApi(promptExecutor, messageMapper, streamFrameMapper),
+            modelsApi = createModelsApi(modelProvider),
+        )
+    }
 
-    private fun createModelsApi(modelProvider: ModelProvider): ModelsApi {
+    private fun createModelsApi(
+        modelProvider: ModelProvider,
+    ): ModelsApi {
         val config = modelProvider.config as ModelProviderConfig.StandardConfig
         requireNotNull(config.apiKey)
 
         return when (LMClientModelProvider.fromId(modelProvider.id)) {
-            LMClientModelProvider.Claude -> {
-                ClaudeModelsApi(
-                    httpClient = claudeHttpClient(
+            LMClientModelProvider.NexosAI -> {
+                NexosAiModelsApi(
+                    httpClient = nexosAiHttpClient(
                         apiKey = config.apiKey,
                         baseUrl = config.apiUrl,
                         isDebug = isDebug,
@@ -135,42 +129,16 @@ internal class LMClientApiProviderImpl(
                 )
             }
 
-            LMClientModelProvider.OpenAI -> {
-                OpenAiModelsApi(
-                    openAI = OpenAI(
-                        token = config.apiKey,
-                        host = OpenAIHost(baseUrl = config.apiUrl),
-                        logging = LoggingConfig(
-                            logLevel = LogLevel.All,
-                        ),
-                        timeout = Timeout(
-                            request = 10.seconds,
-                            connect = 10.seconds,
-                            socket = 30.seconds,
-                        ),
-                        retry = RetryStrategy(maxRetries = 0),
-                    ),
-                )
-            }
-
-            LMClientModelProvider.NexosAI -> NexosAiModelsApi(
-                httpClient = nexosAiHttpClient(
-                    apiKey = config.apiKey,
-                    baseUrl = config.apiUrl,
-                    isDebug = isDebug,
-                ),
-            )
-            LMClientModelProvider.GithubCopilot -> TODO()
+            LMClientModelProvider.OpenAI,
+            LMClientModelProvider.Claude,
             LMClientModelProvider.DeepSeek,
             LMClientModelProvider.Google,
             LMClientModelProvider.Ollama,
-            LMClientModelProvider.OpenRouter,
-            -> KoogModelsApi(
-                provider = LMClientModelProvider
-                    .fromId(
-                        modelProvider.id,
-                    ).toKoogProvider(),
-            )
+            LMClientModelProvider.OpenRouter -> {
+                KoogModelsApi(
+                    provider = LMClientModelProvider.fromId(modelProvider.id).toKoogProvider(),
+                )
+            }
         }
     }
 
@@ -248,7 +216,7 @@ internal class LMClientApiProviderImpl(
                     ),
                 )
             }
+
             LMClientModelProvider.DeepSeek -> TODO()
-            LMClientModelProvider.GithubCopilot -> TODO()
         }
 }

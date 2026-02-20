@@ -2,7 +2,7 @@
 
 package dev.olek.lmclient.data.repositories
 
-import dev.olek.lmclient.data.database.ChatRoomStore
+import dev.olek.lmclient.data.local.ChatRoomStore
 import dev.olek.lmclient.data.models.ChatRoom
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

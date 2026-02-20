@@ -109,10 +109,10 @@ private fun SelectedModelButton(
             text = selectedModel ?: stringResource(Res.string.selected_model_button_no_model),
             maxLines = 1,
             overflow = TextOverflow.MiddleEllipsis,
-            style = AppTheme.typography.bodyLarge,
+            style = AppTheme.typography.body,
             color = { textColor },
             autoSize = TextAutoSize.StepBased(
-                maxFontSize = AppTheme.typography.bodyLarge.fontSize,
+                maxFontSize = AppTheme.typography.body.fontSize,
             ),
         )
         Icon(

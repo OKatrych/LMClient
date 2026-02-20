@@ -45,7 +45,7 @@ fun SearchField(
 
         TextField(
             state = state,
-            textStyle = AppTheme.typography.bodyMedium,
+            textStyle = AppTheme.typography.captionMedium,
             singleLine = true,
             textColor = AppTheme.colors.text,
             cursorBrush = SolidColor(AppTheme.colors.primary),
@@ -65,7 +65,7 @@ fun SearchField(
                 placeholder = {
                     Text(
                         text = hint,
-                        style = AppTheme.typography.bodyMedium,
+                        style = AppTheme.typography.captionMedium,
                         color = AppTheme.colors.textSecondary,
                     )
                 },

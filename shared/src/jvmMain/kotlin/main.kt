@@ -13,12 +13,15 @@ import dev.olek.lmclient.presentation.components.AppComponentImpl
 import dev.olek.lmclient.presentation.ui.App
 import dev.olek.lmclient.presentation.util.readSerializableContainer
 import dev.olek.lmclient.presentation.util.runOnUiThread
+import io.github.vinceglb.filekit.FileKit
 import java.awt.Dimension
 import java.io.File
 
 private const val SAVED_STATE_FILE_NAME = "saved_state.dat"
 
 fun main() {
+    FileKit.init(appId = "LMClient")
+
     val lifecycle = LifecycleRegistry()
     val stateKeeper = StateKeeperDispatcher(File(SAVED_STATE_FILE_NAME).readSerializableContainer())
 

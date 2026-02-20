@@ -1,10 +1,13 @@
 package dev.olek.lmclient.data.remote.models.koog
 
 import ai.koog.prompt.executor.clients.anthropic.AnthropicModels
+import ai.koog.prompt.executor.clients.deepseek.DeepSeekModels
 import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
+import ai.koog.prompt.executor.clients.openrouter.OpenRouterModels
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
+import ai.koog.prompt.llm.OllamaModels
 import arrow.core.Either
 import co.touchlab.kermit.Logger
 import dev.olek.lmclient.data.models.LMClientError
@@ -13,17 +16,21 @@ import dev.olek.lmclient.data.remote.mappers.toDomainError
 import dev.olek.lmclient.data.remote.mappers.toDomainModel
 import dev.olek.lmclient.data.remote.models.ModelsApi
 
-internal class KoogModelsApi(private val provider: LLMProvider) : ModelsApi {
+internal class KoogModelsApi(
+    private val provider: LLMProvider,
+) : ModelsApi {
     private val logger = Logger.withTag("KoogModelsApi")
 
     private val koogHardcodedModels: Map<LLMProvider, List<LLModel>> = mapOf(
         LLMProvider.Anthropic to listOf(
-            AnthropicModels.Opus_3,
             AnthropicModels.Haiku_3,
-            AnthropicModels.Sonnet_3_5,
             AnthropicModels.Haiku_3_5,
+            AnthropicModels.Haiku_4_5,
+            AnthropicModels.Sonnet_3_5,
             AnthropicModels.Sonnet_3_7,
             AnthropicModels.Sonnet_4,
+            AnthropicModels.Sonnet_4_5,
+            AnthropicModels.Opus_3,
             AnthropicModels.Opus_4,
             AnthropicModels.Opus_4_1,
             AnthropicModels.Opus_4_5,
@@ -93,4 +100,21 @@ internal class KoogModelsApi(private val provider: LLMProvider) : ModelsApi {
                 it.toDomainError()
             }
     }
+
+    /* TODO use remote API to fetch model ids and combine this information with
+        https://models.dev/api.json to fill model name and capabilities
+    override suspend fun models(): Either<LMClientError, List<Model>> {
+        logger.d { "Fetching models for provider $provider" }
+        return Either
+            .catch {
+                val remoteModelIds = promptExecutor.models()
+                remoteModelIds.mapNotNull { id ->
+                    // Use https://models.dev/api.json to get additional info
+                    modelsDevApi.getModelOrNull(id)
+                }
+            }.mapLeft {
+                logger.e(it) { "Failed to fetch models for provider $provider" }
+                it.toDomainError()
+            }
+    }*/
 }

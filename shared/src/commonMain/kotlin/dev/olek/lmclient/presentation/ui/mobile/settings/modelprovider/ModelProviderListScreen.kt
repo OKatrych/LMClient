@@ -128,7 +128,7 @@ private fun SectionTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.padding(start = 16.dp, bottom = 16.dp),
         text = title,
-        style = AppTheme.typography.body,
+        style = AppTheme.typography.caption,
         color = AppTheme.colors.textSecondary,
     )
 }
@@ -165,7 +165,6 @@ private fun ModelProviderListScreenPreview() = ScreenPreviewWrapper {
                     LMClientModelProvider.Google,
                     LMClientModelProvider.NexosAI,
                     LMClientModelProvider.OpenRouter,
-                    LMClientModelProvider.GithubCopilot,
                     LMClientModelProvider.DeepSeek,
                     LMClientModelProvider.Ollama,
                 ).map {

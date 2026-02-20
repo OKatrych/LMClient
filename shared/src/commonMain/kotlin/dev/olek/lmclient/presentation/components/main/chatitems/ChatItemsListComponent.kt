@@ -8,6 +8,7 @@ import com.mikepenz.markdown.model.State
 import com.mikepenz.markdown.model.parseMarkdownFlow
 import dev.olek.lmclient.data.models.LMClientError
 import dev.olek.lmclient.data.models.Message
+import dev.olek.lmclient.data.models.MessageContent
 import dev.olek.lmclient.data.repositories.ChatMessagesRepository
 import dev.olek.lmclient.data.repositories.ChatRoomRepository
 import dev.olek.lmclient.data.repositories.ModelProviderRepository
@@ -128,7 +129,7 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
     private suspend fun Message.toChatItem(): ChatItem = when (this) {
         is Message.AssistantMessage -> {
             when (content) {
-                is Message.MessageContent.Text -> {
+                is MessageContent.Text -> {
                     // Try to parse markdown
                     val parsingResult = parseMarkdownFlow(content = content.text)
                         .first { it is State.Success || it is State.Error }
@@ -139,6 +140,7 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
                                 content = ChatItem.ChatItemContent.MarkdownContent(
                                     markdownState = parsingResult,
                                 ),
+                                attachments = attachments,
                                 finishReason = finishReason,
                                 error = error,
                             )
@@ -152,6 +154,7 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
                                 content = ChatItem.ChatItemContent.TextContent(
                                     text = content.text,
                                 ),
+                                attachments = attachments,
                                 finishReason = finishReason,
                                 error = error,
                             )
@@ -161,29 +164,31 @@ internal class ChatItemsListComponentImpl(context: ComponentContext) :
                     }
                 }
 
-                is Message.MessageContent.Audio -> TODO()
+                is MessageContent.Audio -> TODO()
             }
         }
 
         is Message.UserMessage -> {
             when (content) {
-                is Message.MessageContent.Text -> {
+                is MessageContent.Text -> {
                     ChatItem.UserItem(
                         id = id,
                         content = ChatItem.ChatItemContent.TextContent(
                             text = content.text,
                         ),
+                        attachments = attachments,
                     )
                 }
 
-                is Message.MessageContent.Audio -> TODO()
+                is MessageContent.Audio -> TODO()
             }
         }
     }
 }
 
-data class ChatItemsListComponentPreview(private val customState: ChatItemsListState = ChatItemsListState()) :
-    ChatItemsListComponent {
+data class ChatItemsListComponentPreview(
+    private val customState: ChatItemsListState = ChatItemsListState(),
+) : ChatItemsListComponent {
     override val state: StateFlow<ChatItemsListState> = MutableStateFlow(
         customState,
     )
