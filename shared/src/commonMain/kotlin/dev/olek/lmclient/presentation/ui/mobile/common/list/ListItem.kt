@@ -50,14 +50,14 @@ internal fun ListItem(
         ) {
             Text(
                 text = title,
-                style = AppTheme.typography.bodyLarge,
+                style = AppTheme.typography.body,
                 color = AppTheme.colors.text,
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
                     color = AppTheme.colors.textSecondary,
-                    style = AppTheme.typography.body,
+                    style = AppTheme.typography.caption,
                 )
             }
         }

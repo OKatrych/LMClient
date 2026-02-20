@@ -19,24 +19,27 @@ import org.jetbrains.compose.resources.Font
 
 @Immutable
 class AppTypography(
+    val displayMedium: TextStyle,
     val title: TextStyle,
     val titleBold: TextStyle,
-    val titleLarge: TextStyle,
-    val titleLargeMedium: TextStyle,
-    val titleLargeBold: TextStyle,
     val body: TextStyle,
-    val bodyBold: TextStyle,
     val bodyMedium: TextStyle,
-    val bodyLarge: TextStyle,
-    val bodyLargeMedium: TextStyle,
-    val bodyLargeBold: TextStyle,
-    val bodyLargeSemiBold: TextStyle,
+    val bodySemiBold: TextStyle,
+    val caption: TextStyle,
+    val captionMedium: TextStyle,
+    val footnote: TextStyle,
+    val labelSemiBold: TextStyle,
 )
 
 internal val DefaultAppTypography: AppTypography
     @Composable
     get() {
         return AppTypography(
+            displayMedium = TextStyle(
+                fontFamily = DefaultFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 22.sp,
+            ),
             title = TextStyle(
                 fontFamily = DefaultFontFamily,
                 fontWeight = FontWeight.Normal,
@@ -47,55 +50,40 @@ internal val DefaultAppTypography: AppTypography
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
             ),
-            titleLarge = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 22.sp,
-            ),
-            titleLargeMedium = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 22.sp,
-            ),
-            titleLargeBold = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
-            ),
             body = TextStyle(
                 fontFamily = DefaultFontFamily,
                 fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-            ),
-            bodyBold = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
             ),
             bodyMedium = TextStyle(
                 fontFamily = DefaultFontFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-            ),
-            bodyLarge = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
             ),
-            bodyLargeMedium = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-            ),
-            bodyLargeBold = TextStyle(
-                fontFamily = DefaultFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-            ),
-            bodyLargeSemiBold = TextStyle(
+            bodySemiBold = TextStyle(
                 fontFamily = DefaultFontFamily,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
+            ),
+            caption = TextStyle(
+                fontFamily = DefaultFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp,
+            ),
+            captionMedium = TextStyle(
+                fontFamily = DefaultFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+            ),
+            footnote = TextStyle(
+                fontFamily = DefaultFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+            ),
+            labelSemiBold = TextStyle(
+                fontFamily = DefaultFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 10.sp,
             ),
         )
     }

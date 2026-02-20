@@ -48,7 +48,7 @@ fun SuccessPopup(
                     .verticalScroll(state = rememberScrollState())
                     .padding(top = 24.dp, start = 32.dp, end = 32.dp),
                 text = message,
-                style = AppTheme.typography.bodyLarge,
+                style = AppTheme.typography.body,
                 color = AppTheme.colors.textSecondary,
                 textAlign = TextAlign.Center,
             )

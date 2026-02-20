@@ -53,7 +53,7 @@ internal fun EmptyChatItem(
                         Res.string.empty_chat_no_provider
                     }
                 ),
-                style = AppTheme.typography.titleLargeMedium,
+                style = AppTheme.typography.displayMedium,
                 color = AppTheme.colors.textSecondary,
                 textAlign = TextAlign.Center,
             )

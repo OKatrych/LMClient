@@ -122,7 +122,7 @@ private fun ScreenContent(
                 Text(
                     modifier = Modifier.padding(16.dp),
                     text = licenseContent,
-                    style = AppTheme.typography.body,
+                    style = AppTheme.typography.caption,
                     color = AppTheme.colors.text,
                 )
             }
@@ -144,17 +144,17 @@ private fun LibraryItem(library: Library, onClick: (Library) -> Unit, modifier: 
         ) {
             Text(
                 text = library.name,
-                style = AppTheme.typography.bodyLargeMedium,
+                style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.text,
             )
             Text(
                 text = library.author,
-                style = AppTheme.typography.body,
+                style = AppTheme.typography.caption,
                 color = AppTheme.colors.textSecondary,
             )
             Text(
                 text = library.licenseName,
-                style = AppTheme.typography.body,
+                style = AppTheme.typography.caption,
                 color = AppTheme.colors.textSecondary,
             )
         }
@@ -162,7 +162,7 @@ private fun LibraryItem(library: Library, onClick: (Library) -> Unit, modifier: 
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = it,
-                style = AppTheme.typography.body,
+                style = AppTheme.typography.caption,
                 color = AppTheme.colors.textSecondary,
             )
         }

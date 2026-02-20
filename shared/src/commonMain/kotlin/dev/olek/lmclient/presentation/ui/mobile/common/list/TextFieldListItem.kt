@@ -45,7 +45,7 @@ internal fun TextFieldListItem(
         placeholder = {
             Text(
                 text = hint,
-                style = AppTheme.typography.bodyLarge,
+                style = AppTheme.typography.body,
                 color = AppTheme.colors.textSecondary,
             )
         },
@@ -66,7 +66,7 @@ internal fun TextFieldListItem(
             autoCorrectEnabled = false,
             keyboardType = if (isSecret) KeyboardType.Password else KeyboardType.Text,
         ),
-        textStyle = AppTheme.typography.bodyLarge,
+        textStyle = AppTheme.typography.body,
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = AppTheme.colors.text,
             unfocusedTextColor = AppTheme.colors.text,

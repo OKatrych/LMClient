@@ -189,7 +189,7 @@ private fun TextChatElement(content: ChatItemContent.TextContent, finishedGenera
                 .fillMaxWidth()
                 .animateChatText(shouldAnimateSize),
             text = content.text,
-            style = AppTheme.typography.bodyLarge,
+            style = AppTheme.typography.body,
             color = AppTheme.colors.text,
         )
     }
@@ -247,7 +247,7 @@ private fun ErrorCard(error: LMClientError, onRetry: () -> Unit, modifier: Modif
                 Text(
                     modifier = Modifier.weight(1f),
                     text = stringResource(Res.string.messages_list_error_title),
-                    style = AppTheme.typography.bodyLargeSemiBold,
+                    style = AppTheme.typography.bodySemiBold,
                     color = AppTheme.colors.error,
                 )
                 IconButton(
@@ -264,7 +264,7 @@ private fun ErrorCard(error: LMClientError, onRetry: () -> Unit, modifier: Modif
             Text(
                 modifier = Modifier.padding(bottom = 8.dp, end = 8.dp),
                 text = error.toLocalizedMessage(),
-                style = AppTheme.typography.body,
+                style = AppTheme.typography.caption,
                 color = AppTheme.colors.error,
             )
         }
@@ -307,16 +307,16 @@ private fun appMarkdownTypography(
     h4: TextStyle = AppTheme.typography.title,
     h5: TextStyle = AppTheme.typography.title,
     h6: TextStyle = AppTheme.typography.title,
-    text: TextStyle = AppTheme.typography.bodyLarge,
-    code: TextStyle = AppTheme.typography.bodyLarge.copy(fontFamily = FontFamily.Monospace),
+    text: TextStyle = AppTheme.typography.body,
+    code: TextStyle = AppTheme.typography.body.copy(fontFamily = FontFamily.Monospace),
     inlineCode: TextStyle = text.copy(fontFamily = FontFamily.Monospace),
-    quote: TextStyle = AppTheme.typography.bodyLarge.plus(SpanStyle(fontStyle = FontStyle.Italic)),
-    paragraph: TextStyle = AppTheme.typography.bodyLarge,
-    ordered: TextStyle = AppTheme.typography.bodyLarge,
-    bullet: TextStyle = AppTheme.typography.bodyLarge,
-    list: TextStyle = AppTheme.typography.bodyLarge,
+    quote: TextStyle = AppTheme.typography.body.plus(SpanStyle(fontStyle = FontStyle.Italic)),
+    paragraph: TextStyle = AppTheme.typography.body,
+    ordered: TextStyle = AppTheme.typography.body,
+    bullet: TextStyle = AppTheme.typography.body,
+    list: TextStyle = AppTheme.typography.body,
     textLink: TextLinkStyles = TextLinkStyles(
-        style = AppTheme.typography.bodyLarge
+        style = AppTheme.typography.body
             .copy(
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,

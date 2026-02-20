@@ -42,7 +42,7 @@ private fun UserChatItem(userItem: ChatItem.UserItem, modifier: Modifier = Modif
                             modifier = Modifier
                                 .padding(8.dp),
                             text = userItem.content.text,
-                            style = AppTheme.typography.bodyLarge,
+                            style = AppTheme.typography.body,
                             color = AppTheme.colors.textSecondary,
                         )
                     }

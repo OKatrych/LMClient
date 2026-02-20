@@ -194,11 +194,11 @@ private fun InputField(
         placeholder = {
             Text(
                 text = stringResource(Res.string.query_input_placeholder),
-                style = AppTheme.typography.bodyLarge,
+                style = AppTheme.typography.body,
                 color = AppTheme.colors.text,
             )
         },
-        textStyle = AppTheme.typography.bodyLarge,
+        textStyle = AppTheme.typography.body,
         colors = TextFieldDefaults.colors(
             focusedTextColor = AppTheme.colors.text,
             unfocusedTextColor = AppTheme.colors.text,

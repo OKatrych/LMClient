@@ -18,7 +18,7 @@ fun ListSection(title: String, modifier: Modifier = Modifier, content: @Composab
             modifier = Modifier
                 .padding(start = 16.dp, bottom = 16.dp),
             text = title,
-            style = AppTheme.typography.body,
+            style = AppTheme.typography.caption,
             color = AppTheme.colors.textSecondary,
         )
         content()

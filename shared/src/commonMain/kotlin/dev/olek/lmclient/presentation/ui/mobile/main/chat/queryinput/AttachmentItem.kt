@@ -3,11 +3,10 @@ package dev.olek.lmclient.presentation.ui.mobile.main.chat.queryinput
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,6 @@ import dev.olek.lmclient.presentation.theme.AppTheme
 import dev.olek.lmclient.presentation.util.rememberAttachmentImageModel
 import lm_client.shared.generated.resources.Res
 import lm_client.shared.generated.resources.attachment_remove_desc
-import lm_client.shared.generated.resources.ic_attachment
 import lm_client.shared.generated.resources.ic_close
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -73,7 +71,7 @@ private fun ImageAttachmentItem(
         modifier = modifier
             .size(76.dp)
             .clip(AppTheme.shapes.card)
-            .background(AppTheme.colors.backgroundSecondary),
+            .background(AppTheme.colors.background),
         onError = {
             Logger.withTag("AttachmentChip")
                 .e(it.result.throwable) { it.result.throwable.message ?: "" }
@@ -89,33 +87,35 @@ private fun FileAttachmentItem(
     attachment: MessageAttachment,
     modifier: Modifier = Modifier,
 ) {
-    // TODO
-    val icon = when {
-        else -> Res.drawable.ic_attachment
-    }
-
-    Row(
+    Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(AppTheme.colors.surface)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .size(76.dp)
+            .clip(AppTheme.shapes.card)
+            .background(AppTheme.colors.background),
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            tint = AppTheme.colors.icon,
-            modifier = Modifier.size(20.dp),
-        )
         Text(
             text = attachment.fileName ?: "File",
-            style = AppTheme.typography.bodyMedium,
+            style = AppTheme.typography.footnote,
             color = AppTheme.colors.text,
-            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            maxLines = 3,
             modifier = Modifier
-                .padding(start = 8.dp, end = 16.dp),
+                .padding(start = 8.dp, end = 24.dp, top = 8.dp, bottom = 4.dp)
+                .weight(1f),
         )
+        Box(
+            modifier = Modifier
+                .padding(start = 4.dp, bottom = 4.dp)
+                .background(AppTheme.colors.primary, shape = AppTheme.shapes.button),
+        ) {
+            Text(
+                text = attachment.format.uppercase(),
+                style = AppTheme.typography.labelSemiBold,
+                color = AppTheme.colors.onPrimary,
+                maxLines = 1,
+                modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+            )
+        }
     }
 }
 
