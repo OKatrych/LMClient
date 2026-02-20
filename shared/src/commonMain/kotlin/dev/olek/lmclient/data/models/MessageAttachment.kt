@@ -27,3 +27,9 @@ sealed interface AttachmentContentReference {
         }
     }
 }
+
+val AttachmentContentReference.id: String
+    get() = when (this) {
+        is AttachmentContentReference.LocalFile -> pathBytes.decodeToString()
+        is AttachmentContentReference.RemoteFile -> url
+    }

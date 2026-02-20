@@ -32,7 +32,10 @@ internal fun LazyListScope.userChatItem(item: ChatItem.UserItem) {
 private fun UserChatItem(userItem: ChatItem.UserItem, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         if (userItem.attachments.isNotEmpty()) {
-            // TODO add attachments lazy row
+            UserAttachmentsRow(
+                attachments = userItem.attachments,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp),
+            )
         }
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val itemWidth = maxWidth * 0.8f

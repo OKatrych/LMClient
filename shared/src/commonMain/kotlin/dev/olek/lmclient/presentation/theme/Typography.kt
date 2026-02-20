@@ -28,6 +28,7 @@ class AppTypography(
     val caption: TextStyle,
     val captionMedium: TextStyle,
     val footnote: TextStyle,
+    val footnoteMedium: TextStyle,
     val labelSemiBold: TextStyle,
 )
 
@@ -78,6 +79,11 @@ internal val DefaultAppTypography: AppTypography
             footnote = TextStyle(
                 fontFamily = DefaultFontFamily,
                 fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+            ),
+            footnoteMedium = TextStyle(
+                fontFamily = DefaultFontFamily,
+                fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
             ),
             labelSemiBold = TextStyle(

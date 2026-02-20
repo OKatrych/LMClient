@@ -1,10 +1,9 @@
 package dev.olek.lmclient.presentation.ui.mobile.main.chat.queryinput
 
 import androidx.compose.animation.animateBounds
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -14,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.olek.lmclient.data.models.AttachmentContentReference
 import dev.olek.lmclient.data.models.MessageAttachment
+import dev.olek.lmclient.data.models.id
 import dev.olek.lmclient.presentation.ui.mobile.common.PreviewWrapper
 
 @Composable
@@ -28,14 +28,12 @@ fun AttachmentsRow(
                 LazyRow(
                     modifier = modifier,
                     contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     itemsIndexed(
                         items = attachments,
-                        key = { _, attachment -> attachment.content.key },
+                        key = { _, attachment -> attachment.content.id },
                     ) { index, attachment ->
-                        if (index > 0) {
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
                         AttachmentItem(
                             modifier = Modifier.animateItem(),
                             attachment = attachment,
@@ -47,12 +45,6 @@ fun AttachmentsRow(
         }
     }
 }
-
-private val AttachmentContentReference.key: String
-    get() = when (this) {
-        is AttachmentContentReference.LocalFile -> pathBytes.decodeToString()
-        is AttachmentContentReference.RemoteFile -> url
-    }
 
 @Preview
 @Composable
